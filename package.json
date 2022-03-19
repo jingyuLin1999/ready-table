@@ -1,0 +1,63 @@
+{
+  "name": "ready-table",
+  "version": "0.0.2",
+  "private": false,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "product": "vue-cli-service build --target lib --name ready-table src/components/index.js",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "axios": "^0.21.4",
+    "core-js": "^3.6.5",
+    "dayjs": "^1.11.0",
+    "element-resize-detector": "^1.2.4",
+    "element-ui": "^2.15.6",
+    "exceljs": "^4.3.0",
+    "ramda": "^0.27.1",
+    "richform": "^0.6.1",
+    "screenfull": "^4.2.0",
+    "short-uuid": "^4.2.0",
+    "vue": "^2.6.11",
+    "vue-router": "^3.5.1",
+    "vxe-table": "^3.4.15",
+    "vxe-table-plugin-export-xlsx": "^2.2.2",
+    "xe-utils": "^3.5.4"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "babel-eslint": "^10.1.0",
+    "chalk": "^2.4.2",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "mockjs": "^1.0.1-beta3",
+    "node-sass": "^4.13.1",
+    "sass-loader": "^8.0.2",
+    "vue-template-compiler": "^2.6.11"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
+    },
+    "extends": [
+      "plugin:vue/essential",
+      "eslint:recommended"
+    ],
+    "parserOptions": {
+      "parser": "babel-eslint"
+    },
+    "rules": {
+      "no-console": "off",
+      "no-unused-vars": "off"
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
+}

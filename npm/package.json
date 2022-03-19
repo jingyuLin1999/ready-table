@@ -1,0 +1,37 @@
+{
+  "name": "ready-table",
+  "version": "0.0.2",
+  "description": "开箱即用的表组件",
+  "main": "lib/ready-table.umd.min.js",
+  "private": false,
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "axios": "^0.21.4",
+    "dayjs": "^1.11.0",
+    "element-resize-detector": "^1.2.4",
+    "element-ui": "^2.15.6",
+    "exceljs": "^4.3.0",
+    "ramda": "^0.27.1",
+    "richform": "^0.6.1",
+    "screenfull": "^4.2.0",
+    "short-uuid": "^4.2.0",
+    "vxe-table": "^3.4.15",
+    "vxe-table-plugin-export-xlsx": "^2.2.2",
+    "xe-utils": "^3.5.4"
+  },
+  "author": "ljy",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jingyuLin1999/ready-table"
+  },
+  "keywords": [
+    "table",
+    "color"
+  ]
+}

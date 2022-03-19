@@ -1,0 +1,200 @@
+<template>
+  <div class="export-tool" v-if="showTool">
+    <vxe-button
+      icon="el-icon-download"
+      status="warning"
+      :loading="loading"
+      size="small"
+      :content="exportLabel"
+    >
+      <template #dropdowns>
+        <vxe-button
+          v-if="exportable.filter"
+          type="text"
+          content="导出过滤"
+          @click="exportFilter"
+        ></vxe-button>
+        <vxe-button
+          v-if="exportable.curPage"
+          type="text"
+          content="导出当页"
+          @click="exportCurPage"
+        ></vxe-button>
+        <vxe-button
+          v-if="exportable.checked"
+          type="text"
+          content="导出勾选"
+          @click="exportChecked"
+        ></vxe-button>
+        <vxe-button
+          v-if="exportable.template"
+          type="text"
+          status="success"
+          content="模板导出"
+          @click="createExcel"
+        ></vxe-button>
+      </template>
+    </vxe-button>
+  </div>
+</template>
+
+<script>
+import dayjs from "dayjs";
+import axios from "axios";
+import BaseMixin from "./baseMixin";
+
+export default {
+  mixins: [BaseMixin],
+  props: {
+    exportable: { type: Object, default: () => ({}) }, // 是否可以下载
+    downloadConfig: { type: Object, default: () => ({}) }, // 下载配置
+  },
+  data() {
+    return {
+      loading: false,
+      downloadProgress: 0, // 导出进度
+      mockInterval: null,
+    };
+  },
+  computed: {
+    exportColumns() {
+      const pickExportFields = [];
+      if (Array.isArray(this.hooks.fields)) {
+        this.hooks.fields.map((item) => {
+          if (item.exportable)
+            pickExportFields.push({
+              field: item.field,
+            });
+        });
+      }
+      return pickExportFields;
+    },
+    exportLabel() {
+      let baseLabel = "导出";
+      if (this.downloadProgress > 0)
+        baseLabel = baseLabel + this.downloadProgress + "%";
+      return baseLabel;
+    },
+  },
+  mounted() {
+    this.initHooks();
+  },
+  methods: {
+    initHooks() {
+      this.hooks.exportTemplate = this.createExcel;
+    },
+    // 导出符合当前的过滤条件数据
+    async exportFilter() {
+      try {
+        this.loading = true;
+        // 大数据导出需要后端配合
+        if (Object.keys(this.downloadConfig).length > 0) {
+          let queryCondition = this.params.queryCondition;
+          await this.downloadServerFile(JSON.stringify(queryCondition));
+        } else {
+          const { list } = await this.getQueryData();
+          if (list.length > 0) await this.createExcel(list);
+        }
+        this.loading = false;
+      } catch (e) {
+        console.error(e);
+        this.loading = false;
+      }
+    },
+    mockProgress() {
+      let progress = 0;
+      this.downloadProgress = progress;
+      let downloadTotalData = this.hooks.tablePage.total || 1;
+      let calcuTime = (downloadTotalData / 100) * 34; // 100笔大概需要35ms
+      this.mockInterval = setInterval(() => {
+        progress += 1;
+        this.downloadProgress = progress;
+        if (progress > 97) clearInterval(this.mockInterval); // 卡在98%
+      }, calcuTime / 97);
+    },
+    // 从服务器中导出excel,备注 new XMLHttpRequest()打包后会报错
+    async downloadServerFile(params) {
+      this.mockProgress();
+      const { url, method } = this.downloadConfig;
+      const authKey = sessionStorage.getItem("auth-key");
+      const authValue = sessionStorage.getItem("auth-value");
+      await axios({
+        method: method || "get",
+        url: sessionStorage.getItem("base-url") + url,
+        params: { queryCondition: params },
+        responseType: "blob",
+        headers: {
+          [authKey]: authValue,
+        },
+        onDownloadProgress: (evt) => {
+          const { loaded, total } = evt;
+          if (this.mockInterval) clearInterval(this.mockInterval); // 删除虚假的
+          const progress = parseInt((loaded / (total || 1)) * 100);
+          if (progress >= this.downloadProgress)
+            this.downloadProgress = progress;
+        },
+      })
+        .then((response) => {
+          const { data: blob } = response;
+          // 创建a链接 href链接地址 download为下载下来后文件的名称
+          let aElement = document.createElement("a");
+          aElement.href = URL.createObjectURL(blob);
+          aElement.innerHTML = "表下载链接";
+          aElement.download =
+            "导出_" + dayjs().format("YYYYMMDDHHmmss") + ".xlsx";
+          aElement.style.display = "none"; //隐藏a标签 直接调用a标签的点击事件
+          document.body.appendChild(aElement);
+          aElement.click();
+          this.downloadProgress = 0;
+          this.mockInterval = null;
+        })
+        .catch((e) => {
+          this.$message({ type: "error", message: `下载文件失败${e}` });
+          console.error("下载文件失败", e);
+        });
+    },
+    // 导出当页数据
+    exportCurPage() {
+      if (this.hooks.curPageData.length == 0) {
+        this.$message({ type: "warning", message: "无数据可导出" });
+        return;
+      }
+      this.createExcel(this.hooks.curPageData);
+    },
+    // 导出已选择的数据
+    exportChecked() {
+      if (!this.hooks.checkeds.length) {
+        this.$message({ type: "warning", message: "请勾选要导出的数据" });
+        return;
+      }
+      this.createExcel(this.hooks.checkeds);
+    },
+    // 导出模板
+    async createExcel(data = []) {
+      this.loading = true;
+      await this.hooks.xTable.exportData({
+        type: "xlsx",
+        data: data,
+        original: false,
+        columns: this.exportColumns,
+      });
+      this.loading = false;
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.export-tool {
+  box-sizing: border-box;
+  width: 90px;
+  .vxe-button,
+  .vxe-button--dropdown {
+    margin-left: 0;
+    margin-right: 8px;
+  }
+  .vxe-button--dropdown {
+    margin-right: 0px;
+  }
+}
+</style>
