@@ -14,11 +14,21 @@ export function _debounce(fn, delay) {
             fn.apply(context, args)
         }, delay)
     }
-    
+
 }
 
 // 对于sql数据永远是扁平式的
 export function json2obj() {
 
+}
+
+export function observerDomResize(dom, callback) {
+    const MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
+
+    const observer = new MutationObserver(callback)
+
+    observer.observe(dom, { attributes: true, attributeFilter: ['style'], attributeOldValue: true, subtree: true, })
+
+    return observer
 }
 

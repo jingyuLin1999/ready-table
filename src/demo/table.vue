@@ -68,7 +68,7 @@ export default {
           searchable: true,
           importRequired: true,
           formSort: 9,
-          formSort: 2
+          formSort: 2,
         },
         {
           title: "区域名称",

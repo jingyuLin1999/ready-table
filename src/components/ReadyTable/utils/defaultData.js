@@ -105,7 +105,7 @@ export const defaultLayout = {
     labelAlign: "right", // 标签对齐, 默认右对齐, 可选左对齐left
     labelInline: true, // 字段标题显示位置, 默认true左侧left,false显示在top上方
     colors: {
-        theme: "", // #0D194B
+        theme: "#fff", // #0D194B
         fontColor: "", // #37D0FA
         btnColor: "", // #F8F4F4
         btnBgColor: "", // #040C19

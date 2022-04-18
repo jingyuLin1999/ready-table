@@ -514,7 +514,7 @@
 <script>
 import short from "short-uuid";
 import { Tooltip, Button } from "element-ui";
-import { _debounce } from "./utils";
+import { _debounce, observerDomResize } from "./utils";
 import screenfull from "screenfull";
 import { RichForm } from "richform";
 import formMixin from "./mixins/formMixin";
@@ -652,6 +652,9 @@ export default {
       },
       isScreenfull: false, // 是否全屏
       isRefresh: false, // 是否刷新
+      tableHeightDebounce: null,
+      searchDomChanging: false, // 搜索dom高度是否改变
+      tableEl: document.getElementById(this.uuid),
     };
   },
   async mounted() {
@@ -708,8 +711,9 @@ export default {
         this.initHooks();
         this.onAuthorize();
         this.listenSearchDomHeight();
-        this.$_resizeHandler();
+        this.calcuHeight();
         this.loadInitData();
+        this.listenTableParent();
       } catch (e) {
         console.warn(`表字段获取失败:${e}`);
       }
@@ -743,6 +747,7 @@ export default {
       this.hooks.searchCondition = this.searchCondition;
       this.hooks.formValues = this.formValues;
       this.hooks.fields = this.vXTableFields;
+      this.hooks.calcuHeight = this.calcuHeight;
       this.$emit("xTable", this.$refs.xTable);
     },
     // 刷新
@@ -839,28 +844,47 @@ export default {
     },
     // 监听搜索区域的dom
     listenSearchDomHeight() {
-      const _this = this;
-      let startHeight = null;
-      const searchDom = document.getElementById(this.uuid + "-search-wrapper");
-
-      const debounce = _debounce(searchDomResize, 150);
-      this.erd.listenTo(searchDom, (element) => {
-        if (startHeight == null) startHeight = element.offsetHeight;
-        else {
-          const endHeight = element.offsetHeight;
-          let distance = startHeight - endHeight;
-          this.autoTableHeight += distance;
-          startHeight = endHeight;
-        }
-        debounce(element);
-      });
-      function searchDomResize(element) {
-        startHeight = null;
-      }
-    },
-    $_resizeHandler() {
       this.$nextTick(() => {
-        let _tableHeight = document.getElementById(this.uuid).offsetHeight;
+        let startHeight = null;
+        const searchDom = document.getElementById(
+          this.uuid + "-search-wrapper"
+        );
+        const debounce = _debounce(() => {
+          startHeight = null;
+          this.searchDomChanging = false;
+        }, 150);
+        this.erd.listenTo(searchDom, (element) => {
+          this.searchDomChanging = true;
+          if (startHeight == null) startHeight = element.offsetHeight;
+          else {
+            const endHeight = element.offsetHeight;
+            let distance = startHeight - endHeight;
+            this.autoTableHeight += distance;
+            startHeight = endHeight;
+          }
+          debounce(element);
+        });
+      });
+    },
+    listenTableParent() {
+      this.$nextTick(() => {
+        if (!this.tableEl) return;
+        const tablbeParentDom = this.tableEl.parentElement;
+        if (!tablbeParentDom) return;
+        this.tableHeightDebounce = _debounce(() => {
+          this.calcuHeight();
+        }, 50);
+        observerDomResize(tablbeParentDom, (el) => {
+          if (this.searchDomChanging) return;
+          this.tableHeightDebounce();
+        });
+      });
+    },
+    calcuHeight() {
+      this.$nextTick(() => {
+        let tableContainer = document.getElementById(this.uuid);
+        if (!tableContainer) return;
+        let _tableHeight = tableContainer.offsetHeight;
         const searchDom = document.getElementById(
           this.uuid + "-search-wrapper"
         );
@@ -989,7 +1013,7 @@ export default {
       this.$emit("clickRow", event);
     },
     removeListener() {
-      window.removeEventListener("resize", this.$_resizeHandler);
+      window.removeEventListener("resize", this.calcuHeight);
       const tableDom = document.getElementById(this.uuid + "-search-wrapper");
       if (this.erd && tableDom) this.erd.uninstall(tableDom);
     },
@@ -1014,11 +1038,8 @@ export default {
       });
     },
   },
-  beforeMount() {
-    window.addEventListener("resize", this.$_resizeHandler);
-  },
   beforeDestroy() {
-    this.removeListener();
+    window.removeEventListener("resize", this.tableHeightDebounce);
   },
 };
 </script>
