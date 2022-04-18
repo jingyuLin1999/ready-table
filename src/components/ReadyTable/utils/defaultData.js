@@ -15,19 +15,14 @@ export const defaultField = {
     importRequired: false, // 导入是否必填
     aline: false, // 独占一行
     showOverflow: true, // 用户控制是否显示溢出内容
-    // 新增，还未实现
     formSort: 1, // 弹窗的输入顺序
-    formColumns: 0, // 该字段是否几列显示
     fieldSort: 1, // 列表的显示顺序
-    layoutWidget: "", // 如折叠面板或tab切换，默认为空
     widget: "input", // 该字段在新增或编辑弹窗时是用何种组件渲染
-    // 可放入formLayout
-    formLayout: {
+    formLayout: { // richform的字段属性，用于弹窗
         placeholder: "", // 占位符，如请输入
         options: [], // 选项
         disabled: false, // 弹窗字段禁用
-    }, // 该字段的属性配置
-    rules: {}, // 该字段的验证规则
+    },
 }
 
 export const defaultHooks = {

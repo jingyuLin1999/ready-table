@@ -67,6 +67,8 @@ export default {
           sortable: false,
           searchable: true,
           importRequired: true,
+          formSort: 9,
+          formSort: 2
         },
         {
           title: "区域名称",
@@ -75,6 +77,7 @@ export default {
           sortable: false,
           searchable: true,
           importRequired: true,
+          formSort: 10,
         },
         {
           title: "采集周期（毫秒）",

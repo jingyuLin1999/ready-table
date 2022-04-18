@@ -677,12 +677,13 @@ export default {
     vXTableFields() {
       let fields =
         this.fields.length > 0 ? this.fields : this.remote.tableFields;
-      return fields.map((fieldItem) => {
+      fields = fields.map((fieldItem) => {
         let assignField = mergeDeepRight(defaultField, fieldItem);
         if (assignField.noEdit)
           this.noEditFields[assignField.title] = assignField.title;
         return assignField;
       });
+      return this.toSort(fields, "formSort");
     },
     vXTableData() {
       let tableData =
@@ -712,6 +713,14 @@ export default {
       } catch (e) {
         console.warn(`表字段获取失败:${e}`);
       }
+    },
+    toSort(data = [], sortKey) {
+      data.sort((a, b) => {
+        if (a[sortKey] < b[sortKey]) return -1;
+        else if (a[sortKey] > b[sortKey]) return 1;
+        else return 0;
+      });
+      return data;
     },
     async loadInitData() {
       await Promise.all([this.loadTableData(), this.loadTableFields()]);
@@ -1068,6 +1077,10 @@ export default {
   }
   /* 修改vxe表格样式 */
   .vxe-table {
+    .vxe-table--header-wrapper {
+      position: relative;
+      background: var(--theme);
+    }
     &::after {
       content: "";
       position: absolute;

@@ -1,6 +1,7 @@
 import { deleteRows, addRow, updateRow } from "../utils/apis";
 import { Message, MessageBox } from "element-ui";
 import { defaultLayout } from "../utils/defaultData";
+import { clone } from "ramda";
 
 export default {
     data() {
@@ -33,9 +34,11 @@ export default {
         queryFormLayout() {
             let columns = [];
             for (let index = 0; index < 3; index++)columns.push([])
-            let formRow = { widget: "grid", showTitle: false, isClicked: false, fields: [...columns] }
-            for (let index = 0; index < this.vXTableFields.length; index++) {
-                let fieldItem = this.vXTableFields[index];
+            let formRow = { widget: "grid", showTitle: false, isClicked: false, fields: [...columns] };
+            let fields = clone(this.vXTableFields);
+            this.toSort(fields, "fieldSort");
+            for (let index = 0; index < fields.length; index++) {
+                let fieldItem = fields[index];
                 if (fieldItem.searchable) {
                     // 查找最小的下标
                     let minIndex = 0, fieldLength = 1000;
@@ -333,6 +336,7 @@ export default {
         },
         deepPick(keys = [], obj) {
             let pickObj = null;
+            if (keys.length == 0) return obj;
             keys.map((key, index) => {
                 pickObj = obj[key];
                 if (pickObj && keys.length != index + 1)

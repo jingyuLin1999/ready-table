@@ -10,9 +10,10 @@ const port = 8080
 function getProxyPath(proxyPath = {}) {
   const mockPath = require("./src/utils/mockProxy");
   mockPath.map((path) => {
-    proxyPath[`^${path}`] = {
-      target: `http://127.0.0.1:${port}/dev-api` + path,
-      changeOrigin: true,
+    proxyPath[`${path}`] = {
+      target: `http://localhost:${port}/dev-api`,
+      changeOrigin: true, // 是否跨域
+      ws: true,
       pathRewrite: {}
     };
   })

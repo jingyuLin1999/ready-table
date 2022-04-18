@@ -1,12 +1,12 @@
 # Ready Table
 
 ## 说明
-* 简单的表组件，力争开箱即用
+* 现成的表组件，封装一些常见的逻辑，开箱即用
+  * 表的树结构  
   * 可自定义表的样式  
-  * 封装增、删、改、查、导入、导出、全屏放大、字段显示或隐藏设置、分页的逻辑
   * 双击单元格直接编辑功能
-  * 表的树结构
-  * 大数据量导出，请见常见问题解决方案
+  * 大数据量导出，见常见问题解决方案  
+  * 封装增、删、改、查、导入、导出、全屏放大、字段显示或隐藏设置、分页的逻辑
 
 ## 预览
 ```
@@ -188,55 +188,43 @@ export default {
   },
 };
 ```
-
-```css
-<style lang="scss">
-  .ready-table-demo-page {
-    width: 100%;
-    height: 100%;
-  }
-</style>
-```
-注意：1、传入正确的增删改查路径 2、配置后端响应的数据字段映射关系defaultProp  
+注意：1、传入正确的增删改查路径 2、配置defaultProp响应的数据字段映射关系  
 
 ## 文档    
 * formRules校验规则请见[richform](https://github.com/jingyuLin1999/richform)  
 * 表字段属性  
-```json
+```js
 {
-    "title": "", // 显示的字段
-    "field": "", // 数据库字段名称<英文>
-    "width": "", // 字段的宽度，作用于表头
-    "sortable": true, // 字段是否可排序，作用于表头
-    "isSlot": false, // 是否开启插槽
-    "slotName": "", // 动态插槽名，当isSlot为true时有效，主要用于前端渲染重新自定义
-    "isShow": true, // 该字段是否显示
-    "searchable": false, // 该字段是否可搜索
-    "treeNode": false, // 树结构必须且只能有一个为true
-    "clickEdit": false, // 是否启动点击编辑模式
-    "noEdit": false, // 针对某一列
-    "showFormItem": true, // 在弹窗中是否显示该字段
-    "exportable": true, // 是否可导出
-    "importRequired": false, // 导入是否必填
-    "aline": false, // 独占一行
-    "showOverflow": true, // 用户控制是否显示溢出内容
-    // 新增，还未实现
-    "formSort": 1, // 弹窗的输入顺序
-    "formColumns": 0, // 该字段是否几列显示
-    "fieldSort": 1, // 列表的显示顺序
-    "layoutWidget": "", // 如折叠面板或tab切换，默认为空
-    "widget": "input", // 该字段在新增或编辑弹窗时是用何种组件渲染,具体请见richform
-    // 可放入formLayout
-    "formLayout": {
-        "placeholder": "", // 占位符，如请输入
-        "options": [], // 选项
-        "disabled": false, // 弹窗字段禁用
-    }
+    title: "", // 显示的字段
+    field: "", // 数据库字段名称<英文>
+    width: "", // 字段的宽度，作用于表头
+    sortable: true, // 字段是否可排序，作用于表头
+    isSlot: false, // 是否开启插槽
+    slotName: "", // 动态插槽名，当isSlot为true时有效，主要用于前端渲染重新自定义
+    isShow: true, // 该字段是否显示
+    searchable: false, // 该字段是否可搜索
+    treeNode: false, // 树结构必须且只能有一个为true
+    clickEdit: false, // 是否启动点击编辑模式
+    noEdit: false, // 针对某一列
+    showFormItem: true, // 在弹窗中是否显示该字段
+    exportable: true, // 是否可导出
+    importRequired: false, // 导入是否必填
+    aline: false, // 独占一行
+    showOverflow: true, // 用户控制是否显示溢出内容
+    formSort: 1, // 弹窗的输入顺序
+    fieldSort: 1, // 列表的显示顺序
+    widget: "input", // 该字段在新增或编辑弹窗时是用何种组件渲染，具体请见richform
+    formLayout: { // richform的字段属性
+        placeholder: "", // 占位符，如请输入
+        options: [], // 选项
+        disabled: false, // 弹窗字段禁用
+    },
 }
 ```
 
 ## 常见问题解决方案  
-1、大数据导出，可让后端先成excel文件，再返回文件流，此时需要配置downloadConfig，默认是用selectConfig请求回数据后在前端生成excel。后端java采用easyexcel生成文件，再将文件流返回，返回样例如下：  
+1、大数据导出，可让后端先成excel文件，如java用easyexcel库生成文件，再返回文件流，此时需要配置downloadConfig，默认是用selectConfig请求回数据后在前端生成excel。  
+java文件数据流返回样例：  
 ```java
     public static void downloadExcel(File file, HttpServletResponse response) {
         try{
