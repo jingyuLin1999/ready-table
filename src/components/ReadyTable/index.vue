@@ -203,7 +203,7 @@
     <!-- 表单工具 -->
     <vxe-toolbar v-if="showToolBar">
       <template #buttons>
-        <div class="toolbar-wrapper">
+        <div class="toolbar-wrapper" :id="uuid + 'toolbar'">
           <div class="tool-button-left">
             <slot name="preToolbar"></slot>
             <vxe-button
@@ -457,6 +457,7 @@
     </vxe-table>
     <!-- 表单分页 -->
     <vxe-pager
+      :id="uuid + '-pager'"
       v-if="showPageBar"
       :loading="loading"
       :current-page="tablePage.pageNum"
@@ -653,6 +654,7 @@ export default {
       isScreenfull: false, // 是否全屏
       isRefresh: false, // 是否刷新
       tableHeightDebounce: null,
+      searchDomChange: false,
     };
   },
   async mounted() {
@@ -849,7 +851,7 @@ export default {
         );
         const debounce = _debounce(() => {
           startHeight = null;
-        }, 150);
+        }, 50);
         this.erd.listenTo(searchDom, (element) => {
           if (startHeight == null) startHeight = element.offsetHeight;
           else {
@@ -881,13 +883,22 @@ export default {
         let tableContainer = document.getElementById(this.uuid);
         if (!tableContainer) return;
         let _tableHeight = tableContainer.offsetHeight;
-        const searchDom = document.getElementById(
-          this.uuid + "-search-wrapper"
-        );
         if (!_tableHeight) return;
-        _tableHeight -= 55;
-        if (this.showToolBar) _tableHeight -= searchDom.offsetHeight - 8;
-        if (this.showPageBar) _tableHeight -= 44;
+        if (this.showSearchPanel) {
+          const searchDom = document.getElementById(
+            this.uuid + "-search-wrapper"
+          );
+          _tableHeight -= searchDom.offsetHeight;
+        }
+        if (this.showToolBar) {
+          const toolbarDom = document.getElementById(this.uuid + "toolbar");
+          _tableHeight -= 10; // margin
+          _tableHeight -= toolbarDom.offsetHeight;
+        }
+        if (this.showPageBar) {
+          let pagerDom = document.getElementById(this.uuid + "-pager");
+          _tableHeight -= pagerDom.offsetHeight;
+        }
         this.autoTableHeight = _tableHeight;
       });
     },

@@ -13,6 +13,8 @@
           filter: false,
         },
       }"
+      :showToolBar="true"
+      :showPageBar="true"
       :colors="colors"
       :addConfig="addConfig"
       :deleteConfig="deleteConfig"
