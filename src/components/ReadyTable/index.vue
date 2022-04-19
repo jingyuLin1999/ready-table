@@ -653,8 +653,6 @@ export default {
       isScreenfull: false, // 是否全屏
       isRefresh: false, // 是否刷新
       tableHeightDebounce: null,
-      searchDomChanging: false, // 搜索dom高度是否改变
-      tableEl: document.getElementById(this.uuid),
     };
   },
   async mounted() {
@@ -851,10 +849,8 @@ export default {
         );
         const debounce = _debounce(() => {
           startHeight = null;
-          this.searchDomChanging = false;
         }, 150);
         this.erd.listenTo(searchDom, (element) => {
-          this.searchDomChanging = true;
           if (startHeight == null) startHeight = element.offsetHeight;
           else {
             const endHeight = element.offsetHeight;
@@ -868,14 +864,14 @@ export default {
     },
     listenTableParent() {
       this.$nextTick(() => {
-        if (!this.tableEl) return;
-        const tablbeParentDom = this.tableEl.parentElement;
+        const tableEl = document.getElementById(this.uuid);
+        if (!tableEl) return;
+        const tablbeParentDom = tableEl.parentElement;
         if (!tablbeParentDom) return;
         this.tableHeightDebounce = _debounce(() => {
           this.calcuHeight();
         }, 50);
         observerDomResize(tablbeParentDom, (el) => {
-          if (this.searchDomChanging) return;
           this.tableHeightDebounce();
         });
       });
