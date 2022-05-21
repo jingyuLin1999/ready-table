@@ -37,8 +37,10 @@ export const defaultHooks = {
 }
 
 export const defaultProp = {
-    total: "total",
-    data: "payload.list"
+    total: "total", // 响应
+    data: "payload.list", // 响应
+    pageNum: "pageNum", // 请求
+    pageSize: "pageSize", // 请求
 };
 
 export const defaultTablePage = { // 默认分页

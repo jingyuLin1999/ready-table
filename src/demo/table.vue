@@ -20,6 +20,7 @@
       :deleteConfig="deleteConfig"
       :updateConfig="updateConfig"
       :selectConfig="selectConfig"
+      :filterCondition="{ test: 123, lxq: 'ljy' }"
       :token="{
         // url请求基本配置
         key: 'Authorization',

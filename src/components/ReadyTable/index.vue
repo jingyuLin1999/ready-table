@@ -654,7 +654,6 @@ export default {
       isScreenfull: false, // 是否全屏
       isRefresh: false, // 是否刷新
       tableHeightDebounce: null,
-      searchDomChange: false,
     };
   },
   async mounted() {
@@ -780,9 +779,12 @@ export default {
           this.filterCondition,
           this.searchCondition
         );
+        let { pageNum, pageSize } = this.hooks.tablePage;
         let response = await tableData({
           data: {
-            ...this.hooks.tablePage,
+            ...filterCondition,
+            [this.vxDefaultProp.pageNum]: pageNum,
+            [this.vxDefaultProp.pageSize]: pageSize,
             queryCondition: JSON.stringify(filterCondition),
           },
           config: this.selectConfig,
