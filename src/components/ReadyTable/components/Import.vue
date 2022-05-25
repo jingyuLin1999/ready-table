@@ -1,5 +1,5 @@
 <template>
-  <div class="import-component" :style="injectColors">
+  <div class="import-component" :style="injectStyles">
     <Tooltip content="导入" placement="bottom-end" effect="light">
       <vxe-button
         icon="el-icon-upload2"

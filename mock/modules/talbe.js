@@ -5,9 +5,9 @@ module.exports = [
     response: config => {
       let tableData = [];
       let { pageNum, pageSize } = config.query;
-      let indexStart = parseInt(pageNum) == 1 ? parseInt(pageNum) : parseInt(pageNum) * parseInt(pageSize);
-      let indexEnd = parseInt(indexStart) + parseInt(pageSize) + 1;
-      for (let index = indexStart; index < indexEnd; index++) {
+      let indexStart = (parseInt(pageNum) - 1) * parseInt(pageSize);
+      let indexEnd = parseInt(indexStart) + parseInt(pageSize);
+      for (let index = indexStart; index < indexEnd; index++) { // indexEnd
         tableData.push({
           id: index,
           code: "测试" + index,

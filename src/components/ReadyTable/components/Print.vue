@@ -22,6 +22,9 @@
 
 <script>
 import BaseMixin from "./baseMixin";
+import { Message } from "element-ui";
+import { totalTableData } from "../utils/apis";
+
 export default {
   mixins: [BaseMixin],
   data() {
@@ -72,6 +75,26 @@ export default {
       this.hooks.xTable.print({
         data: tableData,
       });
+    },
+    // 获取所有数据
+    async getTotalData() {
+      let tableData = [];
+      // 正常情况下table无法获取全部数据，故需从服务器加载所有数据
+      try {
+        const { payload } = await totalTableData({
+          config: this.params.queryConfig,
+        });
+        tableData = payload.tableData;
+      } catch (e) {
+        Message({
+          message:
+            "从服务器获取数据失败，无法导出所有数据，若继续导出，只能导出模板",
+          type: "error",
+          duration: 10 * 1000,
+        });
+        console.error(`从服务器获取数据失败，无法导出所有数据:${e}`);
+      }
+      return tableData;
     },
   },
 };

@@ -10,7 +10,7 @@
         add: true,
         refresh: true,
         exportable: {
-          filter: false,
+          filter: true,
         },
       }"
       :showToolBar="true"
@@ -21,6 +21,7 @@
       :updateConfig="updateConfig"
       :selectConfig="selectConfig"
       :filterCondition="{ test: 123, lxq: 'ljy' }"
+      :autoPager="true"
       :token="{
         // url请求基本配置
         key: 'Authorization',

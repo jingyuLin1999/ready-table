@@ -189,7 +189,7 @@
 -->
 
 <template>
-  <div class="simple-table-wrapper" :id="uuid" :style="injectColors">
+  <div class="simple-table-wrapper" :id="uuid" :style="injectStyles">
     <!-- 搜索 -->
     <RichForm
       :id="uuid + '-search-wrapper'"
@@ -276,7 +276,9 @@
               :params="{
                 queryConfig: selectConfig,
                 queryCondition: searchCondition,
+                filterCondition: filterCondition,
               }"
+              :defaultProp="vxDefaultProp"
               :downloadConfig="downloadConfig"
               :exportable="showToolsBar.exportable"
             />
@@ -515,7 +517,6 @@
 <script>
 import short from "short-uuid";
 import { Tooltip, Button } from "element-ui";
-import { _debounce, observerDomResize } from "./utils";
 import screenfull from "screenfull";
 import { RichForm } from "richform";
 import formMixin from "./mixins/formMixin";
@@ -529,6 +530,7 @@ import VXETablePluginExportXLSX from "vxe-table-plugin-export-xlsx";
 VXETable.use(VXETablePluginExportXLSX);
 Vue.use(VXETable);
 import elementResizeDetectorMaker from "element-resize-detector";
+import { _debounce, observerDomResize, getRgbValueFromHex } from "./utils";
 
 import {
   InputSettings,
@@ -579,6 +581,8 @@ export default {
     checkRowKeys: { type: Array, default: () => [] }, // 默认勾选的行id集合
     showHeader: { type: Boolean, default: true }, // 是否显示表头
     colors: { type: Object, default: () => ({}) }, // 表单颜色，具体字段请见defaultLayout
+    autoPager: { type: Boolean, default: true }, // 是否自动分页，当为false时表示后端一次性把所有数据都返回，这种情况需要手动分页
+    scrollbarWidth: { type: String, default: "12px" }, // 滚动条宽度
     // -------工具栏-------
     showToolBar: { type: Boolean, default: true }, // 显示工具栏
     showToolBtns: { type: Object, default: () => ({}) }, // 工具栏按钮控制,具体参数见defaultData
@@ -623,12 +627,12 @@ export default {
     return {
       tableId: this.tableId,
       colors: this.vxColors,
-      injectColors: this.injectColors,
+      injectStyles: this.injectStyles,
     };
   },
   data() {
     return {
-      uuid: short.generate(),
+      uuid: "vxe-" + short.generate(),
       filterValue: "",
       loading: false,
       isModal: false,
@@ -657,13 +661,11 @@ export default {
     };
   },
   async mounted() {
+    this.bodyScrollbarClass();
     await this.load();
     this.registerScreenfullEvent();
   },
   watch: {
-    fieldConfig() {
-      this.load();
-    },
     selectConfig() {
       this.load();
     },
@@ -702,6 +704,15 @@ export default {
     vxDefaultProp() {
       // 后端返回来的字段需要做映射
       return Object.assign({ ...defaultProp }, this.defaultProp);
+    },
+    isDark() {
+      // 计算主题是否为暗颜色
+      let theme = this.vxColors.theme;
+      if (!theme) return false;
+      let rgbTheme = getRgbValueFromHex(theme);
+      let $grayLevel =
+        rgbTheme[0] * 0.299 + rgbTheme[1] * 0.587 + rgbTheme[2] * 0.114;
+      return $grayLevel < 192;
     },
   },
   methods: {
@@ -844,6 +855,16 @@ export default {
         this.hooks.remote.tableData = result.items;
       } catch (e) {}
     },
+    // 修改滚动条样式
+    bodyScrollbarClass() {
+      if (!this.vxColors.fontColor) return;
+      this.$nextTick(() => {
+        let tableBodyDom = document.querySelector(
+          `#${this.uuid} .vxe-table--body-wrapper`
+        );
+        if (tableBodyDom) tableBodyDom.classList.add("vx-body-scrollbar");
+      });
+    },
     // 监听搜索区域的dom
     listenSearchDomHeight() {
       this.$nextTick(() => {
@@ -908,7 +929,8 @@ export default {
       const { currentPage, pageSize } = pageInfo;
       this.tablePage.pageSize = pageSize;
       this.tablePage.pageNum = currentPage;
-      this.loadTableData();
+      if (this.autoPager) this.loadTableData();
+      else this.manualPager();
     },
     selectCheckbox({ records, checked, row }) {
       // 点击复选框则选中该行
@@ -1235,40 +1257,41 @@ export default {
     }
   }
   /* 修改table滚动条样式 */
-  .vxe-table--body-wrapper::-webkit-scrollbar {
-    width: 3px;
+  .vx-body-scrollbar {
+    scrollbar-width: thin;
+    &::-webkit-scrollbar {
+      width: var(--scrollbarWidth);
+    }
+    &::-webkit-scrollbar-track {
+      background: var(--theme);
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--btnBgColor);
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--tableBorderColor);
+    }
+    &::-webkit-scrollbar-corner {
+      background: #179a16;
+    }
   }
-  .vxe-table--body-wrapper::-webkit-scrollbar-track {
-    background: #0d47a1;
-    border-radius: 2px;
-  }
-  .vxe-table--body-wrapper::-webkit-scrollbar-thumb {
-    background: #0d47a1;
-    border-radius: 10px;
-  }
-  .vxe-table--body-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #333;
-  }
-  .vxe-table--body-wrapper::-webkit-scrollbar-corner {
-    background: #179a16;
-  }
-  &::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 1px;
-    left: 0;
-    top: 0px;
-    background: #0d47a1;
-  }
-  &::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 1px;
-    left: 0;
-    bottom: 0px;
-    background: #0d47a1;
-  }
+  // &::before {
+  //   content: "";
+  //   position: absolute;
+  //   width: 100%;
+  //   height: 1px;
+  //   left: 0;
+  //   top: -2px;
+  //   background:  var(--theme);
+  // }
+  // &::before {
+  //   content: "";
+  //   position: absolute;
+  //   width: 100%;
+  //   height: 1px;
+  //   left: 0;
+  //   bottom: 0px;
+  //   background:  var(--theme);
+  // }
 }
 </style>

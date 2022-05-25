@@ -42,12 +42,14 @@
 import dayjs from "dayjs";
 import axios from "axios";
 import BaseMixin from "./baseMixin";
+import { tableData } from "../utils/apis";
 
 export default {
   mixins: [BaseMixin],
   props: {
     exportable: { type: Object, default: () => ({}) }, // 是否可以下载
     downloadConfig: { type: Object, default: () => ({}) }, // 下载配置
+    defaultProp: { type: Object, default: () => ({}) },
   },
   data() {
     return {
@@ -75,6 +77,10 @@ export default {
         baseLabel = baseLabel + this.downloadProgress + "%";
       return baseLabel;
     },
+    exportParams() {
+      let { queryCondition, filterCondition } = this.params;
+      return Object.assign({}, filterCondition, queryCondition);
+    },
   },
   mounted() {
     this.initHooks();
@@ -89,11 +95,27 @@ export default {
         this.loading = true;
         // 大数据导出需要后端配合
         if (Object.keys(this.downloadConfig).length > 0) {
-          let queryCondition = this.params.queryCondition;
-          await this.downloadServerFile(JSON.stringify(queryCondition));
+          await this.downloadServerFile(this.exportParams);
         } else {
-          const { list } = await this.getQueryData();
-          if (list.length > 0) await this.createExcel(list);
+          // 根据过滤条件获取数据，并在前端生成文件
+          await tableData({
+            data: {
+              pageNum: 1,
+              pageSize: 1000000, // 一百万条数据
+              ...this.exportParams,
+              queryCondition: this.exportParams,
+            },
+            config: this.params.queryConfig,
+          })
+            .then(async (response) => {
+              let dataKey = this.defaultProp.data;
+              let list = this.deepPick(dataKey.split("."), response);
+              if (Array.isArray(list) && list.length > 0)
+                await this.createExcel(list);
+            })
+            .catch((e) => {
+              console.warn("下载获取数据失败", e);
+            });
         }
         this.loading = false;
       } catch (e) {
@@ -101,6 +123,16 @@ export default {
         this.loading = false;
       }
     },
+    deepPick(keys = [], obj) {
+      let pickObj = null;
+      if (keys.length == 0 || !keys[0]) return obj;
+      keys.map((key, index) => {
+        pickObj = obj[key];
+        if (pickObj && keys.length != index + 1) obj = pickObj;
+      });
+      return pickObj;
+    },
+    // 大数据导出模拟进度
     mockProgress() {
       let progress = 0;
       this.downloadProgress = progress;

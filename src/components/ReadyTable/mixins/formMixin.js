@@ -82,11 +82,12 @@ export default {
         vxColors() {
             return Object.assign({ ...defaultLayout.colors }, { ...this.colors })
         },
-        injectColors() { // 注入style
-            let injectColors = {};
+        injectStyles() { // 注入style
+            let injectStyles = {};
+            injectStyles["--scrollbarWidth"] = this.scrollbarWidth;
             for (let key in this.vxColors)
-                injectColors["--" + key] = this.vxColors[key];
-            return injectColors;
+                injectStyles["--" + key] = this.vxColors[key];
+            return injectStyles;
         },
     },
     methods: {
@@ -336,7 +337,7 @@ export default {
         },
         deepPick(keys = [], obj) {
             let pickObj = null;
-            if (keys.length == 0) return obj;
+            if (keys.length == 0 || !keys[0]) return obj;
             keys.map((key, index) => {
                 pickObj = obj[key];
                 if (pickObj && keys.length != index + 1)
@@ -348,13 +349,28 @@ export default {
         resetTable(response) {
             let { total: totalKey, data: dataKey } = this.vxDefaultProp;
             let list = this.deepPick(dataKey.split("."), response);
-            let total = this.deepPick(totalKey.split("."), response)
-            this.remote.tableData = list;
+            let total = this.autoPager ? this.deepPick(totalKey.split("."), response) : list.length;
             Object.assign(this.hooks.tablePage, { total: total });
             this.hooks.tableData = list;
+            if (this.autoPager) this.remote.tableData = list;
+            else this.manualPager();
             this.setDefaultCheckbox(list);
             this.openTreeNode();
             this.$emit("tableData", list)
+        },
+        // 手动分页
+        manualPager() {
+            if (this.autoPager) return;
+            let manualTableData = [];
+            let { tableData } = this.hooks;
+            let { pageNum, pageSize } = this.tablePage;
+            let indexStart = pageSize * (pageNum - 1);
+            let indexEnd = indexStart + pageSize;
+            for (let index = indexStart; index < indexEnd; index++) {
+                let item = tableData[index];
+                manualTableData.push(item);
+            }
+            this.remote.tableData = manualTableData
         },
         // 树结构展开所有节点
         openTreeNode() {
