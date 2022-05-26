@@ -737,7 +737,8 @@ export default {
       return data;
     },
     async loadInitData() {
-      await Promise.all([this.loadTableData(), this.loadTableFields()]);
+      await this.loadTableFields();
+      await this.loadTableData();
     },
     initHooks() {
       // 挂载一些数据或函数
@@ -803,9 +804,9 @@ export default {
         this.loading = false;
         this.resetTable(response);
       } catch (e) {
-        console.warn(
-          `获取表数据失败，请检查url和method是否正确！,错误信息：${e}`
-        );
+        console.warn(`获取表数据失败，请检查url和method是否正确！`, e);
+      } finally {
+        this.loading = false;
       }
     },
     // 加载表的栏位

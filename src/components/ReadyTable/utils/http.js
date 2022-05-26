@@ -32,11 +32,10 @@ service.interceptors.request.use(
 
 // response interceptor
 service.interceptors.response.use(response => {
-  const res = response.data
-  if (res.status !== 200) {
+  if (response.status != 200) {
     return Promise.reject(new Error(res.msg || 'Error'))
   }
-  return res
+  return response.data
 },
   error => {
     console.log('err' + error) // for debug

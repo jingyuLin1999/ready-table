@@ -2,6 +2,7 @@ import { deleteRows, addRow, updateRow } from "../utils/apis";
 import { Message, MessageBox } from "element-ui";
 import { defaultLayout } from "../utils/defaultData";
 import { clone } from "ramda";
+import { _ } from "core-js";
 
 export default {
     data() {
@@ -366,6 +367,7 @@ export default {
             let { pageNum, pageSize } = this.tablePage;
             let indexStart = pageSize * (pageNum - 1);
             let indexEnd = indexStart + pageSize;
+            if (indexEnd > tableData.length) indexEnd = tableData.length;
             for (let index = indexStart; index < indexEnd; index++) {
                 let item = tableData[index];
                 manualTableData.push(item);
