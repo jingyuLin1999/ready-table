@@ -660,10 +660,8 @@ export default {
       tableHeightDebounce: null,
     };
   },
-  created() {
-    this.onAuthorize();
-  },
   async mounted() {
+    this.onAuthorize();
     this.bodyScrollbarClass();
     await this.load();
     this.registerScreenfullEvent();

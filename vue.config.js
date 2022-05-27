@@ -46,18 +46,18 @@ module.exports = {
     },
     plugins: [],
     externals: {
-      // "axios": "axios",
-      // "dayjs": "dayjs",
-      // "element-resize-detector": "element-resize-detector",
-      // "element-ui": "element-ui",
-      // "exceljs": "exceljs",
-      // "ramda": "ramda",
-      // "richform": "richform",
-      // "screenfull": "screenfull",
-      // "short-uuid": "short-uuid",
-      // "vxe-table": "vxe-table",
-      // "vxe-table-plugin-export-xlsx": "vxe-table-plugin-export-xlsx",
-      // "xe-utils": "xe-utils"
+      "axios": "axios",
+      "dayjs": "dayjs",
+      "element-resize-detector": "element-resize-detector",
+      "element-ui": "element-ui",
+      "exceljs": "exceljs",
+      "ramda": "ramda",
+      "richform": "richform",
+      "screenfull": "screenfull",
+      "short-uuid": "short-uuid",
+      "vxe-table": "vxe-table",
+      "vxe-table-plugin-export-xlsx": "vxe-table-plugin-export-xlsx",
+      "xe-utils": "xe-utils"
     }
   },
   // to handle element icon error in build. 

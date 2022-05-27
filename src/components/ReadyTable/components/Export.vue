@@ -42,6 +42,8 @@
 import dayjs from "dayjs";
 import axios from "axios";
 import BaseMixin from "./baseMixin";
+import { Message } from "element-ui";
+import { isUrl } from "../utils/index";
 import { tableData } from "../utils/apis";
 
 export default {
@@ -147,12 +149,15 @@ export default {
     // 从服务器中导出excel,备注 new XMLHttpRequest()打包后会报错
     async downloadServerFile(params) {
       this.mockProgress();
-      const { url, method } = this.downloadConfig;
-      const authKey = sessionStorage.getItem("auth-key");
-      const authValue = sessionStorage.getItem("auth-value");
+      let { url, method } = this.downloadConfig;
+      let authKey = sessionStorage.getItem("auth-key");
+      let authValue = sessionStorage.getItem("auth-value");
+      let baseUrl = sessionStorage.getItem("base-url");
+      url =
+        !isUrl(url) && baseUrl ? sessionStorage.getItem("base-url") + url : url;
       await axios({
+        url,
         method: method || "get",
-        url: sessionStorage.getItem("base-url") + url,
         [method == "get" ? "params" : "data"]: {
           ...params,
         },
@@ -161,9 +166,9 @@ export default {
           [authKey]: authValue,
         },
         onDownloadProgress: (evt) => {
-          const { loaded, total } = evt;
+          let { loaded, total } = evt;
           if (this.mockInterval) clearInterval(this.mockInterval); // 删除虚假的
-          const progress = parseInt((loaded / (total || 1)) * 100);
+          let progress = parseInt((loaded / (total || 1)) * 100);
           if (progress >= this.downloadProgress)
             this.downloadProgress = progress;
         },
@@ -188,14 +193,14 @@ export default {
           this.mockInterval = null;
         })
         .catch((e) => {
-          this.$message({ type: "error", message: `下载文件失败${e}` });
+          Message({ type: "error", message: `下载文件失败${e}` });
           console.error("下载文件失败", e);
         });
     },
     // 导出当页数据
     exportCurPage() {
       if (this.hooks.curPageData.length == 0) {
-        this.$message({ type: "warning", message: "无数据可导出" });
+        Message({ type: "warning", message: "无数据可导出" });
         return;
       }
       this.createExcel(this.hooks.curPageData);
@@ -203,7 +208,7 @@ export default {
     // 导出已选择的数据
     exportChecked() {
       if (!this.hooks.checkeds.length) {
-        this.$message({ type: "warning", message: "请勾选要导出的数据" });
+        Message({ type: "warning", message: "请勾选要导出的数据" });
         return;
       }
       this.createExcel(this.hooks.checkeds);

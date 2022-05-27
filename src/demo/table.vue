@@ -33,6 +33,7 @@
         // url请求基本配置
         key: 'Authorization',
         value: 'token',
+        baseUrl: 'http://localhost:8080',
       }"
       :defaultProp="{
         // 后端返回的字段映射关系

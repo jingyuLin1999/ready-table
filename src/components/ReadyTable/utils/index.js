@@ -32,8 +32,6 @@ export function observerDomResize(dom, callback) {
     return observer
 }
 
-
-
 /**
  * @description Get the rgb value of the hex color
  * @param {String} color Hex color
@@ -48,4 +46,9 @@ export function getRgbValueFromHex(color) {
     return new Array(3).fill(0).map(function (t, i) {
         return parseInt("0x".concat(color[i * 2]).concat(color[i * 2 + 1]));
     });
+}
+
+export function isUrl(url) {
+    let Exp = /^(https?:\/\/)([0-9a-z.]+)(:[0-9]+)?([/0-9a-z.]+)?(\?[0-9a-z&=]+)?(#[0-9-a-z]+)?/i;
+    return Exp.test(url);
 }

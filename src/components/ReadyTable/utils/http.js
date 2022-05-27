@@ -1,16 +1,18 @@
 import axios from 'axios'
 import { Message } from 'element-ui'
+import { isUrl } from "./index"
 
 // create an axios instance
 const service = axios.create({
-  baseURL: sessionStorage.getItem("base-url"),
+  baseURL: '',
   withCredentials: false,
-  // timeout: 5000 // request timeout
 })
 
 // request interceptor
 service.interceptors.request.use(
   config => {
+    const baseUrl = sessionStorage.getItem("base-url");
+    if (!isUrl(config.url) && baseUrl) config.baseURL = baseUrl;
     const authKey = sessionStorage.getItem("auth-key");
     const authValue = sessionStorage.getItem("auth-value");
     if (authKey == "" || authValue == "") {
