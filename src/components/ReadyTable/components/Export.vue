@@ -73,7 +73,7 @@ export default {
     },
     exportLabel() {
       let baseLabel = "导出";
-      if (this.downloadProgress > 0)
+      if (this.downloadProgress > 0 && this.downloadProgress <= 100)
         baseLabel = baseLabel + this.downloadProgress + "%";
       return baseLabel;
     },
@@ -153,7 +153,9 @@ export default {
       await axios({
         method: method || "get",
         url: sessionStorage.getItem("base-url") + url,
-        params: { queryCondition: params },
+        [method == "get" ? "params" : "data"]: {
+          ...params,
+        },
         responseType: "blob",
         headers: {
           [authKey]: authValue,
@@ -167,16 +169,21 @@ export default {
         },
       })
         .then((response) => {
-          const { data: blob } = response;
+          let blob = new Blob([response.data], {
+            type: "application/octet-stream",
+          });
           // 创建a链接 href链接地址 download为下载下来后文件的名称
-          let aElement = document.createElement("a");
-          aElement.href = URL.createObjectURL(blob);
-          aElement.innerHTML = "表下载链接";
-          aElement.download =
+          let downloadElement = document.createElement("a");
+          let href = window.URL.createObjectURL(blob);
+          downloadElement.href = href;
+          downloadElement.innerHTML = "表下载链接";
+          downloadElement.download =
             "导出_" + dayjs().format("YYYYMMDDHHmmss") + ".xlsx";
-          aElement.style.display = "none"; //隐藏a标签 直接调用a标签的点击事件
-          document.body.appendChild(aElement);
-          aElement.click();
+          downloadElement.style.display = "none"; //隐藏a标签 直接调用a标签的点击事件
+          document.body.appendChild(downloadElement);
+          downloadElement.click();
+          document.body.removeChild(downloadElement);
+          window.URL.revokeObjectURL(href); //释放掉blob对象
           this.downloadProgress = 0;
           this.mockInterval = null;
         })

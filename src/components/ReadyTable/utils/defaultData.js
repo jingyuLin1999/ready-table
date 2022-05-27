@@ -71,7 +71,7 @@ export const defaultEditConfig = {
 export const defaultToken = {
     key: "Authorization",
     value: "Authorization",
-    baseUrl: "http://localhost:8080/"
+    baseUrl: ""
 }
 
 export const defaultToolBar = {

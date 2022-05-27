@@ -660,6 +660,9 @@ export default {
       tableHeightDebounce: null,
     };
   },
+  created() {
+    this.onAuthorize();
+  },
   async mounted() {
     this.bodyScrollbarClass();
     await this.load();
@@ -719,7 +722,6 @@ export default {
     async load() {
       try {
         this.initHooks();
-        this.onAuthorize();
         this.listenSearchDomHeight();
         this.calcuHeight();
         this.loadInitData();
@@ -743,22 +745,22 @@ export default {
     initHooks() {
       // 挂载一些数据或函数
       Object.assign(this.hooks, clone(this.defaultHooks), this.hooks);
+      this.hooks.remote = this.remote;
+      this.hooks.refresh = this.refresh;
+      this.hooks.onSearch = this.onSearch;
       this.hooks.addModal = this.addModal;
-      this.hooks.addSubmit = this.addSubmit;
-      this.hooks.editModal = this.editModal;
-      this.hooks.editSubmit = this.editSubmit;
-      this.hooks.deleteRows = this.deleteRows;
       this.hooks.xTable = this.$refs.xTable;
       this.hooks.tablePage = this.tablePage;
-      this.hooks.remote = this.remote;
-      this.hooks.onSearch = this.onSearch;
-      this.hooks.refresh = this.refresh;
-      this.hooks.loadTableData = this.loadTableData;
       this.hooks.editValid = this.editValid; // 直接编辑模式验证
-      this.hooks.searchCondition = this.searchCondition;
-      this.hooks.formValues = this.formValues;
+      this.hooks.addSubmit = this.addSubmit;
+      this.hooks.editModal = this.editModal;
       this.hooks.fields = this.vXTableFields;
+      this.hooks.editSubmit = this.editSubmit;
+      this.hooks.deleteRows = this.deleteRows;
+      this.hooks.formValues = this.formValues;
       this.hooks.calcuHeight = this.calcuHeight;
+      this.hooks.loadTableData = this.loadTableData;
+      this.hooks.searchCondition = this.searchCondition;
       this.$emit("xTable", this.$refs.xTable);
     },
     // 刷新
@@ -1044,11 +1046,6 @@ export default {
       }
       this.$emit("clickRow", event);
     },
-    removeListener() {
-      window.removeEventListener("resize", this.calcuHeight);
-      const tableDom = document.getElementById(this.uuid + "-search-wrapper");
-      if (this.erd && tableDom) this.erd.uninstall(tableDom);
-    },
     // 本来想挂在hooks上，但vxe-table貌似不支持
     importFile({ file, options }) {
       return new Promise(async (resolve, reject) => {
@@ -1069,8 +1066,15 @@ export default {
         this.isScreenfull = !this.isScreenfull;
       });
     },
+    $_resizeHandler() {
+      this.calcuHeight();
+    },
+  },
+  beforeMount() {
+    window.addEventListener("resize", this.$_resizeHandler);
   },
   beforeDestroy() {
+    window.removeEventListener("resize", this.$_resizeHandler);
     window.removeEventListener("resize", this.tableHeightDebounce);
   },
 };

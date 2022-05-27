@@ -20,13 +20,19 @@
       :deleteConfig="deleteConfig"
       :updateConfig="updateConfig"
       :selectConfig="selectConfig"
-      :filterCondition="{ test: 123, lxq: 'ljy' }"
+      :downloadConfig="downloadConfig"
+      :filterCondition="{
+        dataType: 'macStatus',
+        endDate: '2022-05-27 07:00:00',
+        mac_code: [],
+        shopCode: 'j6-3-9',
+        startDate: '2022-05-26 07:00:00',
+      }"
       :autoPager="true"
       :token="{
         // url请求基本配置
         key: 'Authorization',
         value: 'token',
-        baseUrl: 'http://localhost:8080/',
       }"
       :defaultProp="{
         // 后端返回的字段映射关系
@@ -63,6 +69,10 @@ export default {
       updateConfig: { method: "post", url: "manage/machine/updateMacInfo.do" },
       deleteConfig: { method: "post", url: "manage/machine/deleteMacInfo.do" },
       importConfig: { method: "post", url: "manage/machine/uploadMacInfo.do" },
+      downloadConfig: {
+        method: "post",
+        url: "http://192.168.100.217:8899/ae_cnc/fileDownload/detect_ExpExcel",
+      },
       fields: [
         {
           title: "区域编号",
