@@ -207,7 +207,7 @@ formRules校验规则请见[richform](https://github.com/jingyuLin1999/richform)
 | showHeader              | 显示表头           | Boolean | true                     |                                                                                          |
 | colors                  | 显示序号           | Object  | {}                       |                                                                                          |
 | autoPager               | 是否自动分页       | Boolean | true                     | 当为false时表示后端一次性把所有数据都返回，这种情况会手动分页                            |
-| scrollbarWidth          | 滚动条宽度         | String  | true                     |                                                                                          |
+| scrollbarWidth          | 滚动条宽度         | String  | 12px                     |                                                                                          |
 | showToolBar             | 显示工具栏         | Boolean | true                     |                                                                                          |
 | showToolBtns            | 工具栏按钮控制     | Object  | 具体参数见defaultData    |                                                                                          |
 | showPageBar             | 显示分页           | Boolean | true                     |                                                                                          |
