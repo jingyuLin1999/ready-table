@@ -196,7 +196,7 @@ formRules校验规则请见[richform](https://github.com/jingyuLin1999/richform)
 | ----------------------- | ------------------ | ------- | ------------------------ | ---------------------------------------------------------------------------------------- |
 | tableId                 | 表ID               | String  | ""                       | 用于本地保存数据key的区分                                                                |
 | size                    | 尺寸大小           | String  | medium                   | 可选medium / small / mini                                                                |
-| fields                  | 栏位字段           | Array   | ""                       |                                                                                          |
+| fields                  | 栏位字段           | Array   | []                       |                                                                                          |
 | tableData               | 表数据             | Array   | []                       |                                                                                          |
 | border                  | 是否显示边界       | Boolean | true                     |                                                                                          |
 | highlightHoverRow       |                    | Boolean | true                     |                                                                                          |
