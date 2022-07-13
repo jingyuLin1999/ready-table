@@ -136,7 +136,7 @@ export default {
     },
     // 大数据导出模拟进度
     mockProgress() {
-      let progress = 0;
+      let progress = 1;
       this.downloadProgress = progress;
       let downloadTotalData = this.hooks.tablePage.total || 1;
       let calcuTime = (downloadTotalData / 100) * 34; // 100笔大概需要35ms

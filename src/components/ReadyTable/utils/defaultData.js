@@ -115,6 +115,8 @@ export const defaultLayout = {
         dateRangeBgColor: "", // #999
         multiOptionBgColor: "", //#ddd
         tableBorderColor: "", // #0d47a1
+        scrollbarThumbColor: "",
+        nthChildEvenColor: ""
     },
     actions: [
         {

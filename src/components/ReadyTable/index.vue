@@ -56,136 +56,6 @@
     date3: null,
     address: null,
   },
-  formRules: {
-    name: [
-      { required: true, message: "请输入名称" },
-      { min: 3, max: 5, message: "长度在 3 到 5 个字符" },
-    ],
-    nickname: [{ required: true, message: "请输入昵称" }],
-    sex: [{ required: true, message: "请选择性别" }],
-  },
-  formItems: [
-    {
-      title: "Basic information",
-      span: 24,
-      titleAlign: "left",
-      titleWidth: 200,
-      titlePrefix: { icon: "fa fa-address-card-o" },
-    },
-    {
-      field: "name",
-      title: "Name",
-      span: 12,
-      itemRender: { name: "$input", props: { placeholder: "请输入名称" } },
-    },
-    {
-      field: "nickname",
-      title: "Nickname",
-      span: 12,
-      itemRender: { name: "$input", props: { placeholder: "请输入昵称" } },
-    },
-    {
-      field: "role",
-      title: "Role",
-      span: 12,
-      itemRender: { name: "$input", props: { placeholder: "请输入角色" } },
-    },
-    {
-      field: "sex",
-      title: "Sex",
-      span: 12,
-      itemRender: { name: "$select", options: [] },
-    },
-    {
-      field: "age",
-      title: "Age",
-      span: 12,
-      itemRender: {
-        name: "$input",
-        props: { type: "number", placeholder: "请输入年龄" },
-      },
-    },
-    {
-      field: "flag1",
-      title: "是否单身",
-      span: 12,
-      itemRender: {
-        name: "$radio",
-        options: [
-          { label: "是", value: "Y" },
-          { label: "否", value: "N" },
-        ],
-      },
-    },
-    {
-      field: "checkedList",
-      title: "可选信息",
-      span: 24,
-      visibleMethod: this.visibleMethod,
-      itemRender: {
-        name: "$checkbox",
-        options: [
-          { label: "运动、跑步", value: "1" },
-          { label: "听音乐", value: "2" },
-          { label: "泡妞", value: "3" },
-          { label: "吃美食", value: "4" },
-        ],
-      },
-    },
-    {
-      title: "Other information",
-      span: 24,
-      titleAlign: "left",
-      titleWidth: 200,
-      titlePrefix: { message: "请填写必填项", icon: "fa fa-info-circle" },
-    },
-    {
-      field: "num",
-      title: "Number",
-      span: 12,
-      itemRender: {
-        name: "$input",
-        props: { type: "number", placeholder: "请输入数值" },
-      },
-    },
-    {
-      field: "date3",
-      title: "Date",
-      span: 12,
-      itemRender: {
-        name: "$input",
-        props: { type: "date", placeholder: "请选择日期" },
-      },
-    },
-    {
-      field: "address",
-      title: "Address",
-      span: 24,
-      titleSuffix: {
-        message: "提示信息！！",
-        icon: "fa fa-question-circle",
-      },
-      itemRender: {
-        name: "$textarea",
-        props: {
-          autosize: { minRows: 2, maxRows: 4 },
-          placeholder: "请输入地址",
-        },
-      },
-    },
-    {
-      align: "center",
-      span: 24,
-      titleAlign: "left",
-      itemRender: {
-        name: "$buttons",
-        children: [
-          { props: { type: "submit", content: "提交", status: "primary" } },
-          { props: { type: "reset", content: "重置" } },
-        ],
-      },
-    },
-  ],
 -->
 
 <template>
@@ -201,132 +71,137 @@
       @action="queryActions"
     ></RichForm>
     <!-- 表单工具 -->
-    <vxe-toolbar v-if="showToolBar">
-      <template #buttons>
-        <div class="toolbar-wrapper" :id="uuid + 'toolbar'">
-          <div class="tool-button-left">
-            <slot name="preToolbar"></slot>
-            <vxe-button
-              v-if="showToolsBar.add"
-              icon="el-icon-circle-plus-outline"
-              status="primary"
-              :disabled="isTree ? Object.keys(editRow).length == 0 : false"
-              @click="addModal"
-              >新增</vxe-button
-            >
-            <vxe-button
-              v-if="showToolsBar.delete"
-              icon="el-icon-remove-outline"
-              status="danger"
-              @click="deleteRows"
-              >删除</vxe-button
-            >
-            <vxe-button
-              v-if="showToolsBar.deleteByCondition"
-              icon="el-icon-delete"
-              status="danger"
-              :disabled="batchDeleteDisabled"
-              @click="deleteByCondition"
-              >删除符合过滤条件</vxe-button
-            >
-            <vxe-button
-              v-if="showToolsBar.update"
-              icon="vxe-icon--edit-outline"
-              status="success"
-              @click="editModal"
-              :disabled="Object.keys(editRow).length == 0"
-              >编辑</vxe-button
-            >
-            <vxe-button
-              v-if="showToolsBar.copy"
-              icon="el-icon-document-copy"
-              @click="onCopy"
-              style="background: #31b393; color: #fff"
-              :disabled="Object.keys(editRow).length == 0"
-              >复制</vxe-button
-            >
-            <vxe-button
-              icon="el-icon-printer"
-              v-if="showToolsBar.save"
-              status="perfect"
-              @click="onSave"
-              >保存</vxe-button
-            >
-            <vxe-button
-              v-if="isTree"
-              icon="el-icon-s-home"
-              status="info"
-              @click="onTreeRoot"
-              >根节点</vxe-button
-            >
+    <div class="toolbar-wrapper" v-if="showToolBar" :id="uuid + 'toolbar'">
+      <div class="tool-button-left">
+        <slot name="preToolbar"></slot>
+        <vxe-button
+          v-if="showToolsBar.add"
+          icon="el-icon-circle-plus-outline"
+          status="primary"
+          :disabled="isTree ? Object.keys(editRow).length == 0 : false"
+          @click="addModal"
+          >新增</vxe-button
+        >
+        <vxe-button
+          v-if="showToolsBar.delete"
+          icon="el-icon-remove-outline"
+          status="danger"
+          @click="deleteRows"
+          >删除</vxe-button
+        >
+        <vxe-button
+          v-if="showToolsBar.deleteByCondition"
+          icon="el-icon-delete"
+          status="danger"
+          :disabled="batchDeleteDisabled"
+          @click="deleteByCondition"
+          >删除符合过滤条件</vxe-button
+        >
+        <vxe-button
+          v-if="showToolsBar.update"
+          icon="vxe-icon--edit-outline"
+          status="success"
+          @click="editModal"
+          :disabled="Object.keys(editRow).length == 0"
+          >编辑</vxe-button
+        >
+        <vxe-button
+          v-if="showToolsBar.copy"
+          icon="el-icon-document-copy"
+          @click="onCopy"
+          style="background: #31b393; color: #fff"
+          :disabled="Object.keys(editRow).length == 0"
+          >复制</vxe-button
+        >
+        <vxe-button
+          icon="el-icon-printer"
+          v-if="showToolsBar.save"
+          status="perfect"
+          @click="onSave"
+          >保存</vxe-button
+        >
+        <vxe-button
+          v-if="isTree"
+          icon="el-icon-s-home"
+          status="info"
+          @click="onTreeRoot"
+          >根节点</vxe-button
+        >
 
-            <InputSettings :showTool="showToolsBar.inputSet" :hooks="hooks" />
-            <Search
-              :showTool="showToolsBar.search"
-              :hooks="hooks"
-              :fields="vXTableFields"
-              :simpleSearch="simpleSearch"
-              :selectConfig="selectConfig"
-            />
-            <slot name="afterToolbar"></slot>
-            <Print :showTool="showToolsBar.print" :hooks="hooks" />
-            <Export
-              :showTool="showToolsBar.export"
-              :hooks="hooks"
-              :params="{
-                queryConfig: selectConfig,
-                queryCondition: searchCondition,
-                filterCondition: filterCondition,
-              }"
-              :defaultProp="vxDefaultProp"
-              :downloadConfig="downloadConfig"
-              :exportable="showToolsBar.exportable"
-            />
-          </div>
-          <div class="tool-button-right">
-            <Import
-              v-if="showToolsBar.import"
-              :hooks="hooks"
-              :formData="formData"
-              :params="{
-                importConfig: importConfig,
-              }"
-            />
-            <Tooltip content="刷新" placement="bottom" effect="light">
-              <vxe-button
-                circle
-                icon="el-icon-refresh"
-                v-if="showToolsBar.refresh"
-                :loading="isRefresh"
-                @click="refresh"
-              ></vxe-button>
-            </Tooltip>
-            <Tooltip content="全屏" placement="bottom" effect="light">
-              <vxe-button
-                v-if="showToolsBar.screenfull"
-                circle
-                :icon="
-                  isScreenfull ? 'el-icon-copy-document' : 'el-icon-full-screen'
-                "
-                @click="onScreenfull"
-              ></vxe-button>
-            </Tooltip>
-            <ColumnShow
-              v-if="showToolsBar.columnSettings"
-              :fields="vXTableFields"
-              :hooks="hooks"
-            />
-            <vxe-input
-              v-if="showToolsBar.globalSearch"
-              v-model="filterValue"
-              type="search"
-              placeholder="全表搜索"
-              @keyup="onSearch(filterValue)"
-            ></vxe-input>
-          </div>
-        </div>
-      </template>
-    </vxe-toolbar>
+        <InputSettings :showTool="showToolsBar.inputSet" :hooks="hooks" />
+        <Search
+          :showTool="showToolsBar.search"
+          :hooks="hooks"
+          :fields="vXTableFields"
+          :simpleSearch="simpleSearch"
+          :selectConfig="selectConfig"
+        />
+        <slot name="afterToolbar"></slot>
+        <Print :showTool="showToolsBar.print" :hooks="hooks" />
+        <Export
+          :showTool="showToolsBar.export"
+          :hooks="hooks"
+          :params="{
+            queryConfig: selectConfig,
+            queryCondition: searchCondition,
+            filterCondition: filterCondition,
+          }"
+          :defaultProp="vxDefaultProp"
+          :downloadConfig="downloadConfig"
+          :exportable="showToolsBar.exportable"
+        />
+      </div>
+      <div class="tool-button-right">
+        <Import
+          v-if="showToolsBar.import"
+          :hooks="hooks"
+          :formData="formData"
+          :isDark="isDark"
+          :params="{
+            importConfig: importConfig,
+          }"
+        />
+        <Tooltip
+          content="刷新"
+          placement="bottom"
+          :effect="isDark ? 'dark' : 'light'"
+        >
+          <vxe-button
+            circle
+            icon="el-icon-refresh"
+            v-if="showToolsBar.refresh"
+            :loading="isRefresh"
+            @click="refresh"
+          ></vxe-button>
+        </Tooltip>
+        <Tooltip
+          content="全屏"
+          placement="bottom"
+          :effect="isDark ? 'dark' : 'light'"
+        >
+          <vxe-button
+            v-if="showToolsBar.screenfull"
+            circle
+            :icon="
+              isScreenfull ? 'el-icon-copy-document' : 'el-icon-full-screen'
+            "
+            @click="onScreenfull"
+          ></vxe-button>
+        </Tooltip>
+        <ColumnShow
+          v-if="showToolsBar.columnSettings"
+          :fields="vXTableFields"
+          :hooks="hooks"
+        />
+        <vxe-input
+          v-if="showToolsBar.globalSearch"
+          v-model="filterValue"
+          type="search"
+          placeholder="全表搜索"
+          @keyup="onSearch(filterValue)"
+        ></vxe-input>
+      </div>
+    </div>
     <!-- 表单 -->
     <vxe-table
       class="product-list-table"
@@ -591,17 +466,15 @@ export default {
     isLoading: { type: Boolean, default: true }, // 正在加载中
     resizable: { type: Boolean, default: true }, // 列宽是否允许拖动
     align: { type: String, default: "center" }, // 对其方式
-    tableToolbar: { type: Object, default: () => ({}) },
+    tableToolbar: { type: Object, default: () => ({}) }, // 配置文件
     simpleSearch: { type: Object, default: () => ({}) }, // 简单查询可以传一些自定义的数据给richform
     filterCondition: { type: Object, default: () => ({}) }, // 过滤条件，比如初始化的时就要过滤掉
     // --------弹框---------
-    modalWidth: { type: Number, default: 800 }, // 模态框宽度
     modalTitle: { type: String, default: "编辑&保存" }, // 模态框标题
     hooks: { type: Object, default: () => ({}) }, // 用于挂在内部的一些数据，供外部使用
     formData: { type: Object, default: () => ({}) }, // 弹出数据，与formvalue合并
     formLayout: { type: Object, default: () => ({}) },
     formRules: { type: Object, default: () => ({}) }, // 弹窗校验规则
-    formButtons: { type: Array, default: () => [] }, // 版本更新，后续删除
     formColumns: { type: Number, default: 2 }, // 弹窗布局是几列
     formAction: { type: Boolean, default: true }, // 弹窗提交时内部动作
     formTips: { type: String, default: "" }, // 弹窗提示语句
@@ -641,6 +514,7 @@ export default {
         strategy: "scroll",
       }),
       modalLabel: "", // 弹框标签
+      modalWidth: "800", // 模态框宽度
       editRow: {}, // 正在编辑的行数据
       autoTableHeight: 600,
       defaultTreeConfig, // 默认树配置
@@ -904,6 +778,7 @@ export default {
     },
     calcuHeight() {
       this.$nextTick(() => {
+        // 计算表高度
         let tableContainer = document.getElementById(this.uuid);
         if (!tableContainer) return;
         let _tableHeight = tableContainer.offsetHeight;
@@ -916,14 +791,19 @@ export default {
         }
         if (this.showToolBar) {
           const toolbarDom = document.getElementById(this.uuid + "toolbar");
-          _tableHeight -= 10; // margin
           _tableHeight -= toolbarDom.offsetHeight;
         }
         if (this.showPageBar) {
           let pagerDom = document.getElementById(this.uuid + "-pager");
-          _tableHeight -= pagerDom.offsetHeight;
+          pagerDom.style.height =
+            document.body.clientWidth < 639 ? "68px" : "44px";
+          _tableHeight -= pagerDom.offsetHeight; 
         }
         this.autoTableHeight = _tableHeight;
+        // 计算弹窗宽度
+        let clientWidth = document.body.clientWidth;
+        this.modalWidth =
+          clientWidth < 900 ? (clientWidth < 430 ? "98%" : "500") : "800";
       });
     },
     onPageChange(pageInfo) {
@@ -1090,10 +970,14 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    padding: 5px 0;
+    background: var(--theme);
     > .tool-button-left {
       display: flex;
       align-items: center;
       padding: 0 3px;
+      flex-wrap: wrap;
       .vxe-button,
       .vxe-button--dropdown {
         margin-left: 0;
@@ -1123,6 +1007,7 @@ export default {
     min-height: 50px;
     max-height: 400px;
     .vxe-modal--content {
+      scrollbar-width: thin;
       overflow: auto !important;
     }
   }
@@ -1192,26 +1077,39 @@ export default {
         .vxe-header--row {
           > .vxe-header--column {
             position: relative;
+            &::after {
+              content: "";
+              position: absolute;
+              width: 100%;
+              left: 0;
+              bottom: 0px;
+              height: 1px;
+              background: var(--tableBorderColor);
+              z-index: 99;
+            }
+            &::before {
+              content: "";
+              position: absolute;
+              width: 1px;
+              height: 100%;
+              right: 0;
+              bottom: 0px;
+              background: var(--tableBorderColor);
+              z-index: 99;
+            }
           }
-          .vxe-header--column::after {
-            content: "";
-            position: absolute;
-            width: 100%;
-            left: 0;
-            bottom: 0px;
-            height: 1px;
-            background: var(--tableBorderColor);
-            z-index: 99;
-          }
-          .vxe-header--column::before {
-            content: "";
-            position: absolute;
-            width: 1px;
-            height: 100%;
-            right: 0;
-            bottom: 0px;
-            background: var(--tableBorderColor);
-            z-index: 99;
+          > .col--gutter {
+            position: relative;
+            &::after {
+              content: "";
+              position: absolute;
+              width: 100%;
+              height: 1px;
+              right: 0;
+              bottom: 0;
+              background: var(--tableBorderColor);
+              z-index: 99;
+            }
           }
         }
       }
@@ -1255,7 +1153,7 @@ export default {
         background: var(--theme);
       }
       .vxe-body--row:nth-child(even) {
-        background: var(--theme);
+        background: var(--nthChildEvenColor);
       }
     }
   }
@@ -1269,7 +1167,7 @@ export default {
       background: var(--theme);
     }
     &::-webkit-scrollbar-thumb {
-      background: var(--btnBgColor);
+      background: var(--scrollbarThumbColor);
     }
     &::-webkit-scrollbar-thumb:hover {
       background: var(--tableBorderColor);
@@ -1278,23 +1176,5 @@ export default {
       background: #179a16;
     }
   }
-  // &::before {
-  //   content: "";
-  //   position: absolute;
-  //   width: 100%;
-  //   height: 1px;
-  //   left: 0;
-  //   top: -2px;
-  //   background:  var(--theme);
-  // }
-  // &::before {
-  //   content: "";
-  //   position: absolute;
-  //   width: 100%;
-  //   height: 1px;
-  //   left: 0;
-  //   bottom: 0px;
-  //   background:  var(--theme);
-  // }
 }
 </style>

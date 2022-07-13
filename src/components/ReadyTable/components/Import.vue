@@ -1,6 +1,10 @@
 <template>
   <div class="import-component" :style="injectStyles">
-    <Tooltip content="导入" placement="bottom-end" effect="light">
+    <Tooltip
+      content="导入"
+      placement="bottom-end"
+      :effect="isDark ? 'dark' : 'light'"
+    >
       <vxe-button
         icon="el-icon-upload2"
         circle
@@ -80,6 +84,7 @@ export default {
   mixins: [BaseMixin],
   props: {
     formData: { type: Object, default: () => ({}) },
+    isDark: { type: Boolean, default: false },
   },
   components: { Tooltip, Button },
   computed: {

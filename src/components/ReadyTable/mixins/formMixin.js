@@ -2,7 +2,6 @@ import { deleteRows, addRow, updateRow } from "../utils/apis";
 import { Message, MessageBox } from "element-ui";
 import { defaultLayout } from "../utils/defaultData";
 import { clone } from "ramda";
-import { _ } from "core-js";
 
 export default {
     data() {
@@ -34,7 +33,8 @@ export default {
         },
         queryFormLayout() {
             let columns = [];
-            for (let index = 0; index < 3; index++)columns.push([])
+            let maxColumns = document.body.clientWidth < 415 ? 1 : 3
+            for (let index = 0; index < maxColumns; index++)columns.push([])
             let formRow = { widget: "grid", showTitle: false, isClicked: false, fields: [...columns] };
             let fields = clone(this.vXTableFields);
             this.toSort(fields, "fieldSort");
@@ -81,7 +81,9 @@ export default {
             return canFilter ? false : true
         },
         vxColors() {
-            return Object.assign({ ...defaultLayout.colors }, { ...this.colors })
+            let vxColors = Object.assign({ ...defaultLayout.colors }, { ...this.colors });
+            if (!vxColors.nthChildEvenColor) vxColors.nthChildEvenColor = vxColors.theme
+            return vxColors;
         },
         injectStyles() { // 注入style
             let injectStyles = {};
@@ -144,9 +146,10 @@ export default {
         },
         // 自动创建richform的布局
         createFormLayout() {
-            let columns = [];
             let aLines = [];
-            for (let index = 0; index < this.formColumns; index++)columns.push([])
+            let columns = [];
+            let formColumns = document.body.clientWidth < 430 ? 1 : this.formColumns;
+            for (let index = 0; index < formColumns; index++)columns.push([])
             let defaultForm = JSON.parse(JSON.stringify(defaultLayout))
             let formRow = { widget: "grid", showTitle: false, isClicked: false, fields: [...columns] }
             for (let index = 0; index < this.vXTableFields.length; index++) {
@@ -162,7 +165,7 @@ export default {
                         ...fieldItem.formLayout
                     };
                     if (fieldItem.formLayout.aline) aLines.push(field);
-                    else formRow.fields[index % this.formColumns].push(field)
+                    else formRow.fields[index % formColumns].push(field)
                 }
             }
             defaultForm.colors = this.colors;
