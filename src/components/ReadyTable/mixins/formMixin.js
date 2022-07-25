@@ -111,11 +111,21 @@ export default {
         onFormatter({ row, cellValue, column }) {
             try {
                 let field = this.vXTableFields.find(item => item.field == column.property);
-                let { options, defaultProp } = field.formLayout;
+                let { options, defaultProp, dict } = field.formLayout;
                 if (options.length > 0) {
+                    // 字典是否存在过滤
+                    let filterValue, optionFilterKey;
+                    for (let key in dict) {
+                        let item = dict[key];
+                        let [valueKey, condition] = key.split("==");
+                        if (condition == "any" && item.filterKey) {
+                            filterValue = row[valueKey.trim()];
+                            optionFilterKey = item.filterKey;
+                        }
+                    }
                     // 考虑树结构，故用递归查找
                     let labels = [];
-                    let findOptions = this.iterationFormatter(options, cellValue, defaultProp || {});
+                    let findOptions = this.iterationFormatter(options, cellValue, defaultProp || {}, filterValue, optionFilterKey);
                     if (findOptions.length) {
                         let propLabel = "label";
                         if (defaultProp && Object.keys(defaultProp).length && defaultProp.label) propLabel = defaultProp.label;
@@ -129,7 +139,7 @@ export default {
             }
         },
         // 递归查找树
-        iterationFormatter(data = [], cellValue, defaultProp = {}) {
+        iterationFormatter(data = [], cellValue, defaultProp = {}, filterValue, optionFilterKey) {
             let result = []; // 结果必须是数组，可能是多选
             let propValue = "value"
             if (Object.keys(defaultProp).length && defaultProp.value) propValue = defaultProp.value;
@@ -137,9 +147,9 @@ export default {
             for (let i = 0; i < data.length; i++) {
                 let item = data[i];
                 if (Array.isArray(cellValue) && cellValue.includes(item[propValue])) result.push(item);
-                else if (item[propValue] == cellValue) result.push(item);
+                else if (item[propValue] == cellValue && item[optionFilterKey] == filterValue) result.push(item);
                 if (item.children && Object.keys(result).length == 0) {
-                    result = this.iterationFormatter(item.children, cellValue, defaultProp);
+                    result = this.iterationFormatter(item.children, cellValue, defaultProp, filterValue, optionFilterKey);
                 }
             }
             return result;
