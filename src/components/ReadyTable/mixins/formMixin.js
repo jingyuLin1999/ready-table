@@ -308,7 +308,7 @@ export default {
                         })
                         this.loading = true;
                         const payload = await deleteRows({
-                            data: { deleteIds: JSON.stringify(deleteIds) },
+                            data: { [this.vxDefaultProp.deleteIds]: deleteIds },
                             config: this.deleteConfig,
                         });
                         // 后端删除了，前端对应的勾选状态也要删除

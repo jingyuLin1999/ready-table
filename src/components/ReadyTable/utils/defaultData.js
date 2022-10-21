@@ -41,6 +41,7 @@ export const defaultProp = {
     data: "payload.list", // 响应
     pageNum: "pageNum", // 请求
     pageSize: "pageSize", // 请求
+    deleteIds: "deleteIds"
 };
 
 export const defaultTablePage = { // 默认分页

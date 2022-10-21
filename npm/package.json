@@ -1,6 +1,6 @@
 {
   "name": "ready-table",
-  "version": "0.1.2",
+  "version": "0.1.7",
   "description": "开箱即用的表组件",
   "main": "lib/ready-table.umd.min.js",
   "private": false,
@@ -17,7 +17,7 @@
     "element-ui": "^2.15.6",
     "exceljs": "^4.3.0",
     "ramda": "^0.27.1",
-    "richform": "^0.7.5",
+    "richform": "^0.7.8",
     "screenfull": "^4.2.0",
     "short-uuid": "^4.2.0",
     "vxe-table": "^3.4.15",

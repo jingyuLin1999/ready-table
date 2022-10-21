@@ -5,7 +5,7 @@ function resolve(dir) {
   return path.join(__dirname, dir);
 }
 
-const port = 8080
+const port = 8594
 
 function getProxyPath(proxyPath = {}) {
   const mockPath = require("./src/utils/mockProxy");
