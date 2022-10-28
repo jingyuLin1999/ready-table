@@ -76,19 +76,29 @@
         <slot name="preToolbar"></slot>
         <vxe-button
           v-if="showToolsBar.add"
-          icon="el-icon-circle-plus-outline"
+          :icon="
+            toolButsText.add.icon
+              ? toolButsText.add.icon
+              : 'el-icon-circle-plus-outline'
+          "
           status="primary"
           :disabled="isTree ? Object.keys(editRow).length == 0 : false"
           @click="addModal"
-          >新增</vxe-button
+          >{{
+            toolButsText.add.text ? toolButsText.add.text : "新增"
+          }}</vxe-button
         >
         <vxe-button
           v-if="showToolsBar.delete"
-          icon="el-icon-remove-outline"
+          :icon="
+            toolButsText.delete.icon
+              ? toolButsText.delete.icon
+              : 'el-icon-remove-outline'
+          "
           status="danger"
           @click="deleteRows"
-          >删除</vxe-button
-        >
+          >{{ toolButsText.delete.text ? toolButsText.delete.text : "删除" }}
+        </vxe-button>
         <vxe-button
           v-if="showToolsBar.deleteByCondition"
           icon="el-icon-delete"
@@ -99,12 +109,16 @@
         >
         <vxe-button
           v-if="showToolsBar.update"
-          icon="vxe-icon--edit-outline"
+          :icon="
+            toolButsText.update.icon
+              ? toolButsText.update.icon
+              : 'vxe-icon--edit-outline'
+          "
           status="success"
           @click="editModal"
           :disabled="Object.keys(editRow).length == 0"
-          >编辑</vxe-button
-        >
+          >{{ toolButsText.update.text ? toolButsText.update.text : "编辑" }}
+        </vxe-button>
         <vxe-button
           v-if="showToolsBar.copy"
           icon="el-icon-document-copy"
@@ -425,6 +439,7 @@ import {
   defaultHooks,
   defaultToolBar,
   defaultTablePage,
+  defaultToolBtnText,
 } from "./utils/defaultData";
 import { tableData, tableFields, searchTable } from "./utils/apis";
 
@@ -461,6 +476,7 @@ export default {
     // -------工具栏-------
     showToolBar: { type: Boolean, default: true }, // 显示工具栏
     showToolBtns: { type: Object, default: () => ({}) }, // 工具栏按钮控制,具体参数见defaultData
+    toolBtnText: { teype: Object, default: () => ({}) }, // text
     showPageBar: { type: Boolean, default: true }, // 显示分页
     showCheckbox: { type: Boolean, default: true }, // 是否显示checkbox
     isLoading: { type: Boolean, default: true }, // 正在加载中
@@ -479,6 +495,7 @@ export default {
     formAction: { type: Boolean, default: true }, // 弹窗提交时内部动作
     formTips: { type: String, default: "" }, // 弹窗提示语句
     deleteTips: { type: String, default: "此操作将删除所有勾选的行" }, // 删除提示语句
+    reqIgnoreKeys: { type: Array, default: () => [] }, // 增,改，过滤请求参数
     // -----增删改查路径-----
     token: { type: Object, default: () => ({}) }, // 令牌,服务器交互权限认证
     editConfig: { type: Object, default: () => ({}) },
@@ -588,6 +605,9 @@ export default {
       let $grayLevel =
         rgbTheme[0] * 0.299 + rgbTheme[1] * 0.587 + rgbTheme[2] * 0.114;
       return $grayLevel < 192;
+    },
+    toolButsText() {
+      return Object.assign(clone(defaultToolBtnText), this.toolBtnText);
     },
   },
   methods: {
@@ -797,7 +817,7 @@ export default {
           let pagerDom = document.getElementById(this.uuid + "-pager");
           pagerDom.style.height =
             document.body.clientWidth < 639 ? "68px" : "44px";
-          _tableHeight -= pagerDom.offsetHeight; 
+          _tableHeight -= pagerDom.offsetHeight;
         }
         this.autoTableHeight = _tableHeight;
         // 计算弹窗宽度

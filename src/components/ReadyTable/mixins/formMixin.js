@@ -195,19 +195,20 @@ export default {
                 this.$emit("action", this.curClickBtn)
                 return;
             }
+            let filterReqParams = {};
+            for (let key in this.formValues) {
+                if (!this.reqIgnoreKeys.includes(key))
+                    filterReqParams[key] = this.formValues[key]
+            }
             // 内部自动校验
             switch (this.curClickBtn) {
                 case "addSubmit":
                 case "copySubmit":
                 case "addTreeRoot":
-                    this.addSubmit({
-                        ...this.formValues,
-                    });
+                    this.addSubmit(filterReqParams);
                     break;
                 case "editSubmit":
-                    this.editSubmit({
-                        ...this.formValues
-                    })
+                    this.editSubmit(filterReqParams)
                     break;
                 default: break;
             }

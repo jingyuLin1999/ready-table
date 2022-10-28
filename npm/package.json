@@ -1,6 +1,6 @@
 {
   "name": "ready-table",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "开箱即用的表组件",
   "main": "lib/ready-table.umd.min.js",
   "private": false,

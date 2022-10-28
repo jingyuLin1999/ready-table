@@ -75,6 +75,12 @@ export const defaultToken = {
     baseUrl: ""
 }
 
+export const defaultToolBtnText = {
+    add: { text: "", icon: "" },
+    delete: { text: "", icon: "" },
+    update: { text: "", icon: "" },
+}
+
 export const defaultToolBar = {
     add: true,
     delete: true, // 删除勾选的

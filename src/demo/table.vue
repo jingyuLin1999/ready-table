@@ -21,6 +21,7 @@
       :updateConfig="updateConfig"
       :selectConfig="selectConfig"
       :downloadConfig="downloadConfig"
+      :reqIgnoreKeys="['sort']"
       :filterCondition="{
         dataType: 'macStatus',
         endDate: '2022-05-27 07:00:00',
@@ -44,6 +45,7 @@
       :hooks="tableHooks"
       :fields="fields"
       :importConfig="importConfig"
+      :toolBtnText="toolBtnText"
     >
     </ready-table>
   </div>
@@ -54,6 +56,9 @@ export default {
   components: { ReadyTable },
   data() {
     return {
+      toolBtnText: {
+        update: { text: "更新" },
+      },
       colors: {
         theme: "#0D194B",
         fontColor: "#37D0FA",
@@ -69,7 +74,7 @@ export default {
       tableHooks: {}, // 可以打印出来看看
       addConfig: { method: "post", url: "manage/machine/insertMacInfo.do" },
       selectConfig: { method: "get", url: "table/select" },
-      updateConfig: { method: "post", url: "manage/machine/updateMacInfo.do" },
+      updateConfig: { method: "get", url: "table/update" },
       deleteConfig: { method: "post", url: "manage/machine/deleteMacInfo.do" },
       importConfig: { method: "post", url: "manage/machine/uploadMacInfo.do" },
       downloadConfig: {
@@ -85,7 +90,6 @@ export default {
           searchable: true,
           importRequired: true,
           formSort: 9,
-          formSort: 2,
         },
         {
           title: "区域名称",
@@ -101,31 +105,20 @@ export default {
           field: "periodCollect",
           isSlot: false,
           sortable: false,
-          widget: "inputnumber",
           importRequired: true,
-          formLayout: {
-            min: 0,
-            max: 1000000000,
-          },
         },
         {
           title: "重连间隔（秒）",
           field: "periodReconn",
           isSlot: false,
           sortable: false,
-          widget: "inputnumber",
           importRequired: true,
-          formLayout: {
-            min: 0,
-            max: 1000000000,
-          },
         },
         {
           title: "排序",
           field: "sort",
           isSlot: false,
           sortable: false,
-          widget: "inputnumber",
           isShow: false,
         },
         {
@@ -163,15 +156,13 @@ export default {
             require: true,
           },
           periodCollect: {
-            type: "number",
-            require: true,
-            minimum: 1,
+            type: "string",
+            minLength: 1,
             require: true,
           },
           periodReconn: {
-            type: "number",
-            require: true,
-            minimum: 1,
+            type: "string",
+            minLength: 1,
             require: true,
           },
         },
