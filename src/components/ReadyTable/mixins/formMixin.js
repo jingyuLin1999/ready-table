@@ -264,6 +264,7 @@ export default {
             this.isModal = !this.isModal;
             this.editRow = this.formValues; // 提交后需要赋值，否则再次点击进来不会改变
             this.refresh();
+            this.$emit("updated", result)
         },
         // 新增创建表单数据
         createFormData() {

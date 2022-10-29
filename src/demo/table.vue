@@ -73,7 +73,7 @@ export default {
       },
       tableHooks: {}, // 可以打印出来看看
       addConfig: { method: "post", url: "manage/machine/insertMacInfo.do" },
-      selectConfig: { method: "get", url: "table/select" },
+      selectConfig: { method: "get", url: "table/select", reqKey: "params" },
       updateConfig: { method: "get", url: "table/update" },
       deleteConfig: { method: "post", url: "manage/machine/deleteMacInfo.do" },
       importConfig: { method: "post", url: "manage/machine/uploadMacInfo.do" },

@@ -1,7 +1,9 @@
 <template>
   <div class="export-tool" v-if="showTool">
     <vxe-button
-      icon="el-icon-download"
+      :icon="
+        toolBtnText.export.icon ? toolBtnText.export.icon : 'el-icon-download'
+      "
       status="warning"
       :loading="loading"
       size="small"
@@ -74,7 +76,7 @@ export default {
       return pickExportFields;
     },
     exportLabel() {
-      let baseLabel = "导出";
+      let baseLabel = this.toolBtnText.export.text || "导出";
       if (this.downloadProgress > 0 && this.downloadProgress <= 100)
         baseLabel = baseLabel + this.downloadProgress + "%";
       return baseLabel;

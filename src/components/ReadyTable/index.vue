@@ -160,6 +160,7 @@
             queryCondition: searchCondition,
             filterCondition: filterCondition,
           }"
+          :toolBtnText="toolButsText"
           :defaultProp="vxDefaultProp"
           :downloadConfig="downloadConfig"
           :exportable="showToolsBar.exportable"
