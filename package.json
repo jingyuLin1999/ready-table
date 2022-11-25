@@ -1,6 +1,6 @@
 {
   "name": "ready-table",
-  "version": "0.2.0",
+  "version": "0.2.4",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -16,7 +16,7 @@
     "element-ui": "^2.15.6",
     "exceljs": "^4.3.0",
     "ramda": "^0.27.1",
-    "richform": "^0.7.8",
+    "richform": "^0.8.1",
     "screenfull": "^4.2.0",
     "short-uuid": "^4.2.0",
     "vue": "^2.6.11",

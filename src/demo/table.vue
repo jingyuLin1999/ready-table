@@ -47,13 +47,22 @@
       :importConfig="importConfig"
       :toolBtnText="toolBtnText"
     >
+      <template #afterToolbar>
+        <vxe-button
+          icon="el-icon-download"
+          status="primary"
+          :disabled="tableHooks.checkeds.length != 1"
+          >下载</vxe-button
+        >
+      </template>
     </ready-table>
   </div>
 </template>
 <script>
+import { Modal } from "vxe-table";
 import ReadyTable from "@/components/ReadyTable";
 export default {
-  components: { ReadyTable },
+  components: { ReadyTable, Modal },
   data() {
     return {
       toolBtnText: {
@@ -71,7 +80,9 @@ export default {
         scrollbarThumbColor: "#262F65",
         nthChildEvenColor: "",
       },
-      tableHooks: {}, // 可以打印出来看看
+      tableHooks: {
+        checkeds: [],
+      }, // 可以打印出来看看
       addConfig: { method: "post", url: "manage/machine/insertMacInfo.do" },
       selectConfig: { method: "get", url: "table/select", reqKey: "params" },
       updateConfig: { method: "get", url: "table/update" },

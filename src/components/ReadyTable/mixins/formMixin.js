@@ -162,6 +162,7 @@ export default {
             for (let index = 0; index < formColumns; index++)columns.push([])
             let defaultForm = JSON.parse(JSON.stringify(defaultLayout))
             let formRow = { widget: "grid", showTitle: false, isClicked: false, fields: [...columns] }
+            defaultForm.labelWidth = this.formLabelWidth
             for (let index = 0; index < this.vXTableFields.length; index++) {
                 let fieldItem = this.vXTableFields[index];
                 if (fieldItem.showFormItem) {

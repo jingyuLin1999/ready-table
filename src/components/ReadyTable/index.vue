@@ -96,6 +96,7 @@
               : 'el-icon-remove-outline'
           "
           status="danger"
+          :disabled="hooks.checkeds.length == 0"
           @click="deleteRows"
           >{{ toolButsText.delete.text ? toolButsText.delete.text : "删除" }}
         </vxe-button>
@@ -116,7 +117,7 @@
           "
           status="success"
           @click="editModal"
-          :disabled="Object.keys(editRow).length == 0"
+          :disabled="hooks.checkeds.length != 1"
           >{{ toolButsText.update.text ? toolButsText.update.text : "编辑" }}
         </vxe-button>
         <vxe-button
@@ -405,6 +406,7 @@
 </template>
 
 <script>
+import "vxe-table/lib/style.css";
 import short from "short-uuid";
 import { Tooltip, Button } from "element-ui";
 import screenfull from "screenfull";
@@ -415,7 +417,6 @@ import { mergeDeepRight, clone } from "ramda";
 import Vue from "vue";
 import "xe-utils";
 import VXETable from "vxe-table";
-import "vxe-table/lib/style.css";
 import VXETablePluginExportXLSX from "vxe-table-plugin-export-xlsx";
 VXETable.use(VXETablePluginExportXLSX);
 Vue.use(VXETable);
@@ -493,6 +494,7 @@ export default {
     formLayout: { type: Object, default: () => ({}) },
     formRules: { type: Object, default: () => ({}) }, // 弹窗校验规则
     formColumns: { type: Number, default: 2 }, // 弹窗布局是几列
+    formLabelWidth: { type: String, default: "95px" }, // 弹窗label宽度
     formAction: { type: Boolean, default: true }, // 弹窗提交时内部动作
     formTips: { type: String, default: "" }, // 弹窗提示语句
     deleteTips: { type: String, default: "此操作将删除所有勾选的行" }, // 删除提示语句
@@ -551,6 +553,9 @@ export default {
       isRefresh: false, // 是否刷新
       tableHeightDebounce: null,
     };
+  },
+  created() {
+    Object.assign(this.hooks, clone(this.defaultHooks), this.hooks);
   },
   async mounted() {
     this.onAuthorize();
@@ -637,7 +642,6 @@ export default {
     },
     initHooks() {
       // 挂载一些数据或函数
-      Object.assign(this.hooks, clone(this.defaultHooks), this.hooks);
       this.hooks.remote = this.remote;
       this.hooks.refresh = this.refresh;
       this.hooks.onSearch = this.onSearch;
@@ -844,7 +848,9 @@ export default {
       ) {
         this.calcuCheckRowKeys.map((id) => {
           // 这样做不合理，因为checkRowKeys的id可能在第二页，而当前在第一页，未获取到第二页数据
-          this.hooks.checkeds.push({ [this.rowId]: id });
+          if (id != undefined || id != null) {
+            this.hooks.checkeds.push({ [this.rowId]: id });
+          }
         });
       }
       // 记录每页勾选的值，全取消的时候是用该数组循环
@@ -869,6 +875,11 @@ export default {
           );
           this.calcuCheckRowKeys.splice(checkKeyIdx, 1);
         }
+        // 情景复选框选了两笔数据，取消第二笔数据，clickRow则要赋值第一笔数据
+        if (this.hooks.checkeds.length == 1) {
+          this.hooks.clickRow = this.hooks.checkeds[0];
+          this.editRow = this.hooks.clickRow;
+        }
       }
     },
     selectAllCheckbox({ records, checked }) {
@@ -886,7 +897,7 @@ export default {
           let checkKey = this.calcuCheckRowKeys.find(
             (key) => key == row[this.rowId]
           );
-          if (!checkKey) this.calcuCheckRowKeys.push(row.id);
+          if (!checkKey) this.calcuCheckRowKeys.push(row[this.rowId]);
         });
       } else {
         // 删除当页
@@ -935,7 +946,7 @@ export default {
           (item) => item[this.rowId] == row[this.rowId]
         );
         if (!hasChecked) {
-          this.editRow = {};
+          // this.editRow = {};
           if (hasIndex > -1) this.hooks.checkeds.splice(hasIndex, 1);
         } else {
           this.editRow = row;
