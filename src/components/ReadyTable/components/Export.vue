@@ -54,6 +54,7 @@ export default {
     exportable: { type: Object, default: () => ({}) }, // 是否可以下载
     downloadConfig: { type: Object, default: () => ({}) }, // 下载配置
     defaultProp: { type: Object, default: () => ({}) },
+    fields: { type: Array, default: () => [] }, // 表单栏位字段
   },
   data() {
     return {
@@ -62,11 +63,16 @@ export default {
       mockInterval: null,
     };
   },
+  watch: {
+    fields() {
+      this.exportColumns;
+    },
+  },
   computed: {
     exportColumns() {
       const pickExportFields = [];
-      if (Array.isArray(this.hooks.fields)) {
-        this.hooks.fields.map((item) => {
+      if (Array.isArray(this.fields)) {
+        this.fields.map((item) => {
           if (item.exportable)
             pickExportFields.push({
               field: item.field,

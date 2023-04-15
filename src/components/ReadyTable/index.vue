@@ -161,6 +161,7 @@
             queryCondition: searchCondition,
             filterCondition: filterCondition,
           }"
+          :fields="vXTableFields"
           :toolBtnText="toolButsText"
           :defaultProp="vxDefaultProp"
           :downloadConfig="downloadConfig"
@@ -585,7 +586,9 @@ export default {
           this.noEditFields[assignField.title] = assignField.title;
         return assignField;
       });
-      return this.toSort(fields, "formSort");
+      fields = this.toSort(fields, "formSort");
+      this.hooks.fields = fields;
+      return fields;
     },
     vXTableData() {
       let tableData =
