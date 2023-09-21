@@ -1,5 +1,6 @@
 const webpack = require("webpack");
 const path = require('path');
+const isBuild = process.argv.includes("build")
 
 function resolve(dir) {
   return path.join(__dirname, dir);
@@ -22,7 +23,7 @@ function getProxyPath(proxyPath = {}) {
 
 module.exports = {
   publicPath: '',
-  outputDir: 'dist/lib',
+  outputDir: 'dist',
   assetsDir: 'static',
   productionSourceMap: false,
   css: { extract: false },
@@ -45,20 +46,21 @@ module.exports = {
       }
     },
     plugins: [],
-    externals: {
-      // "axios": "axios",
-      // "dayjs": "dayjs",
-      // "element-resize-detector": "element-resize-detector",
-      // "element-ui": "element-ui",
-      // "exceljs": "exceljs",
-      // "ramda": "ramda",
-      // "richform": "richform",
-      // "screenfull": "screenfull",
-      // "short-uuid": "short-uuid",
-      // "vxe-table": "vxe-table",
-      // "vxe-table-plugin-export-xlsx": "vxe-table-plugin-export-xlsx",
-      // "xe-utils": "xe-utils"
-    }
+    externals: isBuild ? {
+      "axios": "axios",
+      "dayjs": "dayjs",
+      "element-resize-detector": "element-resize-detector",
+      "element-ui": "element-ui",
+      "exceljs": "exceljs",
+      "ramda": "ramda",
+      "richform": "richform",
+      "screenfull": "screenfull",
+      "short-uuid": "short-uuid",
+      "vxe-table": "vxe-table",
+      "vxe-table-plugin-export-xlsx": "vxe-table-plugin-export-xlsx",
+      "xe-utils": "xe-utils",
+      "vue-i18n": "vue-i18n"
+    } : {}
   },
   // to handle element icon error in build. 
   chainWebpack: config => {

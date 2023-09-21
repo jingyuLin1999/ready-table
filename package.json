@@ -1,6 +1,6 @@
 {
   "name": "ready-table",
-  "version": "0.2.4",
+  "version": "0.4.3",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -8,6 +8,8 @@
     "product": "vue-cli-service build --target lib --name ready-table src/components/index.js",
     "lint": "vue-cli-service lint"
   },
+  "main": "dist/ready-table.umd.min.js",
+  "module": "dist/ready-table.umd.min.js",
   "dependencies": {
     "axios": "^0.21.4",
     "core-js": "^3.6.5",
@@ -20,6 +22,7 @@
     "screenfull": "^4.2.0",
     "short-uuid": "^4.2.0",
     "vue": "^2.6.11",
+    "vue-i18n": "^8.28.2",
     "vue-router": "^3.5.1",
     "vxe-table": "^3.4.15",
     "vxe-table-plugin-export-xlsx": "^2.2.2",
@@ -55,9 +58,25 @@
       "no-unused-vars": "off"
     }
   },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md",
+    "src/i18n/lang"
+  ],
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "keywords": [
+    "table",
+    "color"
+  ],
+  "author": "ljy",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jingyuLin1999/ready-table"
+  }
 }

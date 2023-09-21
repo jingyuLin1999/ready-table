@@ -1,75 +1,36 @@
 <template>
   <div class="import-component" :style="injectStyles">
-    <Tooltip
-      content="导入"
-      placement="bottom-end"
-      :effect="isDark ? 'dark' : 'light'"
-    >
-      <vxe-button
-        icon="el-icon-upload2"
-        circle
-        :disabled="Object.keys(params.importConfig).length == 0"
-        @click="openImportModal"
-      ></vxe-button>
+    <Tooltip :content="$t('toolBar.import.tooltip')" placement="bottom-end" :effect="isDark ? 'dark' : 'light'">
+      <vxe-button icon="el-icon-upload2" circle :disabled="Object.keys(params.importConfig).length == 0"
+        @click="openImportModal"></vxe-button>
     </Tooltip>
-    <vxe-modal
-      v-model="isModal"
-      title="批量导入"
-      width="80%"
-      height="80%"
-      resize
-      showFooter
-      destroy-on-close
-    >
+    <vxe-modal v-model="isModal" title="批量导入" width="80%" height="80%" resize showFooter destroy-on-close>
       <div class="grid-border">
         <div class="grid-title">
-          <span><i class="el-icon-s-operation"></i>导入信息</span>
-          <div class="export-template" @click="exportTemplate">导出模板</div>
+          <span><i class="el-icon-s-operation"></i>{{ $t("toolBar.import.fileTitle") }}</span>
+          <div class="export-template" @click="exportTemplate">{{ $t("toolBar.export.template") }}</div>
         </div>
         <div class="grid-container select-file">
-          <vxe-button
-            size="small"
-            class="select-file-button"
-            icon="fa fa-download"
-            @click="selectImportFile"
-            >选择文件</vxe-button
-          >
+          <vxe-button size="small" class="select-file-button" icon="fa fa-download" @click="selectImportFile">{{
+            $t("toolBar.import.selectFile") }}</vxe-button>
           <div class="file-info" v-if="Object.keys(fileInfo).length > 0">
             {{ `${fileInfo.options.filename}.${fileInfo.options.type}` }}
           </div>
         </div>
-        <div class="grid-title"><i class="el-icon-s-operation"></i>预览</div>
-        <vxe-table
-          class="grid-container"
-          border
-          :data="tableData"
-          :cell-style="cellStyle"
-          :header-cell-class-name="headerCellClassName"
-        >
+        <div class="grid-title"><i class="el-icon-s-operation"></i>{{ $t("toolBar.import.preview") }}</div>
+        <vxe-table class="grid-container" border :data="tableData" :cell-style="cellStyle"
+          :header-cell-class-name="headerCellClassName">
           <template v-for="item in perviewFields">
-            <vxe-table-column
-              align="center"
-              show-overflow
-              :visible="item.isShow"
-              :key="item.field"
-              :field="item.field"
-              :title="item.title"
-              :width="item.width"
-              :sortable="item.sortable"
-            >
+            <vxe-table-column align="center" show-overflow :visible="item.isShow" :key="item.field" :field="item.field"
+              :title="item.title" :width="item.width" :sortable="item.sortable">
             </vxe-table-column>
           </template>
         </vxe-table>
       </div>
       <template #footer>
-        <Button
-          size="small"
-          type="primary"
-          :disabled="tableData.length == 0"
-          @click="onSureImport"
-          >确定导入</Button
-        >
-        <Button size="small" @click="closeModal">取消</Button>
+        <Button size="small" type="primary" :disabled="tableData.length == 0" @click="onSureImport">{{
+          $t("toolBar.import.confirmImportText") }}</Button>
+        <Button size="small" @click="closeModal">{{ $t("toolBar.import.cancelButtonText") }}</Button>
       </template>
     </vxe-modal>
   </div>
@@ -203,14 +164,17 @@ export default {
 
 <style lang="scss" >
 $borderColor: var(--fontColor);
+
 .import-component {
   margin-left: 8px;
+
   .grid-container .vxe-header--column.import-required {
     color: #f00;
   }
 
   .grid-border {
     border: 1px solid $borderColor;
+
     .grid-title {
       height: 35px;
       line-height: 35px;
@@ -221,20 +185,24 @@ $borderColor: var(--fontColor);
       display: flex;
       align-items: center;
       background: var(--btnBgColor);
+
       .export-template {
         margin-left: 10px;
         color: #f60;
         cursor: pointer;
       }
     }
+
     .grid-container {
       min-height: 50px;
       padding: 0 2px;
     }
+
     .select-file {
       display: flex;
       align-items: center;
       margin-bottom: 3px;
+
       .select-file-button {
         margin-right: 5px;
       }

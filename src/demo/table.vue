@@ -1,59 +1,38 @@
 <template>
   <div class="ready-table-demo-page">
-    <ready-table
-      :showToolBtns="{
-        import: true,
-        export: true,
-        update: true,
-        delete: true,
-        search: false,
-        add: true,
-        refresh: true,
-        exportable: {
-          filter: true,
-        },
-      }"
-      :showToolBar="true"
-      :showPageBar="true"
-      :colors="colors"
-      :addConfig="addConfig"
-      :deleteConfig="deleteConfig"
-      :updateConfig="updateConfig"
-      :selectConfig="selectConfig"
-      :downloadConfig="downloadConfig"
-      :reqIgnoreKeys="['sort']"
+    <div @click="onChangeL">语言</div>
+    <ready-table :showToolBtns="{
+      import: true,
+      export: true,
+      update: true,
+      delete: true,
+      search: false,
+      add: true,
+      refresh: true,
+      exportable: {
+        filter: true,
+      },
+    }" :showToolBar="true" :showPageBar="true" :colors="colors" :addConfig="addConfig" :deleteConfig="deleteConfig"
+      :updateConfig="updateConfig" :selectConfig="selectConfig" :downloadConfig="downloadConfig" :reqIgnoreKeys="['sort']"
       :filterCondition="{
         dataType: 'macStatus',
         endDate: '2022-05-27 07:00:00',
         mac_code: [],
         shopCode: 'j6-3-9',
         startDate: '2022-05-26 07:00:00',
-      }"
-      :autoPager="true"
-      :token="{
-        // url请求基本配置
-        key: 'Authorization',
-        value: 'token',
-        baseUrl: 'http://localhost:8594',
-      }"
-      :defaultProp="{
-        // 后端返回的字段映射关系
-        data: 'payload.tableData',
-        total: 'payload.tablePage.total',
-      }"
-      :formRules="formRules"
-      :hooks="tableHooks"
-      :fields="fields"
-      :importConfig="importConfig"
-      :toolBtnText="toolBtnText"
-    >
+      }" :autoPager="true" :token="{
+  // url请求基本配置
+  key: 'Authorization',
+  value: 'token',
+  baseUrl: 'http://localhost:8594',
+}" :defaultProp="{
+  // 后端返回的字段映射关系
+  data: 'payload.tableData',
+  total: 'payload.tablePage.total',
+}" :formRules="formRules" :hooks="tableHooks" :fields="fields" :importConfig="importConfig"
+      :toolBtnText="toolBtnText">
       <template #afterToolbar>
-        <vxe-button
-          icon="el-icon-download"
-          status="primary"
-          :disabled="tableHooks.checkeds.length != 1"
-          >下载</vxe-button
-        >
+        <vxe-button icon="el-icon-download" status="primary" :disabled="tableHooks.checkeds.length != 1">下载</vxe-button>
       </template>
     </ready-table>
   </div>
@@ -63,10 +42,15 @@ import { Modal } from "vxe-table";
 import ReadyTable from "@/components/ReadyTable";
 export default {
   components: { ReadyTable, Modal },
+  methods: {
+    onChangeL() {
+      this.$i18n.locale = this.$i18n.locale == "en" ? "zh-CN" : "en";
+    },
+  },
   data() {
     return {
       toolBtnText: {
-        update: { text: "更新" },
+        // update: { text: "更新" },
       },
       colors: {
         theme: "#0D194B",

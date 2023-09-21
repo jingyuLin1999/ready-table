@@ -79,7 +79,7 @@ export const defaultToolBtnText = {
     add: { text: "", icon: "" },
     delete: { text: "", icon: "" },
     update: { text: "", icon: "" },
-    export: { text: "", icon: "" }, 
+    export: { text: "", icon: "" },
 }
 
 export const defaultToolBar = {

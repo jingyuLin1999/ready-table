@@ -13,26 +13,26 @@
         <vxe-button
           v-if="exportable.filter"
           type="text"
-          content="导出过滤"
+          :content="$t('toolBar.export.filter')"
           @click="exportFilter"
         ></vxe-button>
         <vxe-button
           v-if="exportable.curPage"
           type="text"
-          content="导出当页"
+          :content="$t('toolBar.export.curPage')"
           @click="exportCurPage"
         ></vxe-button>
         <vxe-button
           v-if="exportable.checked"
           type="text"
-          content="导出勾选"
+          :content="$t('toolBar.export.checked')"
           @click="exportChecked"
         ></vxe-button>
         <vxe-button
           v-if="exportable.template"
           type="text"
           status="success"
-          content="模板导出"
+          :content="$t('toolBar.export.template')"
           @click="createExcel"
         ></vxe-button>
       </template>
@@ -82,7 +82,7 @@ export default {
       return pickExportFields;
     },
     exportLabel() {
-      let baseLabel = this.toolBtnText.export.text || "导出";
+      let baseLabel = this.toolBtnText.export.text || this.$t("toolBar.export.title");
       if (this.downloadProgress > 0 && this.downloadProgress <= 100)
         baseLabel = baseLabel + this.downloadProgress + "%";
       return baseLabel;
@@ -191,7 +191,7 @@ export default {
           downloadElement.href = href;
           downloadElement.innerHTML = "表下载链接";
           downloadElement.download =
-            "导出_" + dayjs().format("YYYYMMDDHHmmss") + ".xlsx";
+            "export_" + dayjs().format("YYYYMMDDHHmmss") + ".xlsx";
           downloadElement.style.display = "none"; //隐藏a标签 直接调用a标签的点击事件
           document.body.appendChild(downloadElement);
           downloadElement.click();

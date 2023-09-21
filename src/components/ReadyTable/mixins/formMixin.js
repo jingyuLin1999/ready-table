@@ -2,6 +2,7 @@ import { deleteRows, addRow, updateRow } from "../utils/apis";
 import { Message, MessageBox } from "element-ui";
 import { defaultLayout } from "../utils/defaultData";
 import { clone } from "ramda";
+import GlobalConfig from '../../globalConfig'
 
 export default {
     data() {
@@ -64,9 +65,11 @@ export default {
             cloneDefaultLayout.colors = this.vxColors;
             let defaultForm = cloneDefaultLayout;
             let collapse = {
-                name: "network", widget: "collapse", title: "查询条件", style: { color: '#4F9FFE' }, expand: false, fields: [formRow], actions: [
-                    { name: "queryCondition", type: "success", title: "搜索", icon: "el-icon-search", right: true, visible: true, tips: "提示信息", top: false, size: "small" },
-                    { name: "clearCondition", type: "danger", title: "清空", icon: "", right: true, visible: true, tips: "提示信息", top: false, size: "small" },
+                name: "network", widget: "collapse", title: this.$t("query.title"), style: { color: '#4F9FFE' }, expand: false, fields: [formRow], actions: [
+                    {
+                        name: "queryCondition", type: "success", title: this.$t("query.query"), icon: "el - icon - search", right: true, visible: true, tips: "提示信息", top: false, size: "small"
+                    },
+                    { name: "clearCondition", type: "danger", title: this.$t("query.clear"), icon: "", right: true, visible: true, tips: "提示信息", top: false, size: "small" },
                 ],
             }
             defaultForm.layout = [collapse];
@@ -219,7 +222,7 @@ export default {
         },
         // 新增弹窗
         addModal() {
-            this.modalLabel = "新增&保存";
+            this.modalLabel = this.$t("modal.addTitle");
             this.isModal = !this.isModal;
             this.createFormLayout();
             this.createFormData();
@@ -240,19 +243,19 @@ export default {
         // 编辑弹窗
         editModal() {
             if (!Object.keys(this.editRow).length) {
-                Message({ message: "请选重一行", type: "warnning", duration: 5 * 1000 });
+                Message({ message: this.$t("modal.copyWarnMsg"), type: "warnning", duration: 5 * 1000 });
                 return;
             }
             this.curClickBtn = "editSubmit";
             this.createFormLayout();
-            this.modalLabel = "编辑&保存";
+            this.modalLabel = this.$t("modal.editTitle");
             this.isModal = !this.isModal;
             this.formValues = JSON.parse(JSON.stringify(this.editRow));
         },
         // 复制数据
         onCopy() {
             this.editModal();
-            this.modalLabel = "复制&保存";
+            this.modalLabel = this.$t("modal.copyTitle");
             this.curClickBtn = "copySubmit";
         },
         // 编辑提交
@@ -297,11 +300,11 @@ export default {
         deleteRows() {
             return new Promise((resolve, reject) => {
                 if (this.hooks.checkeds.length == 0) {
-                    Message({ message: "请先勾选行", type: "error", duration: 4 * 1000, }); return resolve();
+                    Message({ message: this.$t("confirm.delete.checkedRowMsg"), type: "error", duration: 4 * 1000, }); return resolve();
                 }
                 MessageBox.confirm(`${this.deleteTips}, 是否继续?`, {
-                    confirmButtonText: "确定",
-                    cancelButtonText: "取消",
+                    confirmButtonText: this.$t("confirm.delete.confirmButtonText"),
+                    cancelButtonText: this.$t("confirm.delete.cancelButtonText"),
                     type: "warning",
                 }).then(async () => {
                     try {
@@ -337,9 +340,9 @@ export default {
         async deleteByCondition() {
             let canFilter = Object.values(this.searchCondition).find(item => item != null)
             if (!canFilter) return;
-            MessageBox.confirm("此操作将批量删除符合条件的数据, 是否继续?", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
+            MessageBox.confirm(this.$t("confirm.delete.confirmMsg"), {
+                confirmButtonText: this.$t("confirm.delete.confirmButtonText"),
+                cancelButtonText: this.$t("confirm.delete.cancelButtonText"),
                 type: "warning",
             }).then(async () => {
                 try {

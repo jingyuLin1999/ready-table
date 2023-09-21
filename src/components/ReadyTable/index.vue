@@ -61,231 +61,92 @@
 <template>
   <div class="simple-table-wrapper" :id="uuid" :style="injectStyles">
     <!-- 搜索 -->
-    <RichForm
-      :id="uuid + '-search-wrapper'"
-      class="query-conditon-wrapper"
-      v-show="showSearchPanel"
-      :form="queryFormLayout"
-      :values="searchCondition"
-      :showBtns="false"
-      @action="queryActions"
-    ></RichForm>
+    <RichForm :id="uuid + '-search-wrapper'" class="query-conditon-wrapper" v-show="showSearchPanel"
+      :form="queryFormLayout" :values="searchCondition" :showBtns="false" @action="queryActions"></RichForm>
     <!-- 表单工具 -->
     <div class="toolbar-wrapper" v-if="showToolBar" :id="uuid + 'toolbar'">
       <div class="tool-button-left">
         <slot name="preToolbar"></slot>
-        <vxe-button
-          v-if="showToolsBar.add"
-          :icon="
-            toolButsText.add.icon
-              ? toolButsText.add.icon
-              : 'el-icon-circle-plus-outline'
-          "
-          status="primary"
-          :disabled="isTree ? Object.keys(editRow).length == 0 : false"
-          @click="addModal"
-          >{{
-            toolButsText.add.text ? toolButsText.add.text : "新增"
-          }}</vxe-button
-        >
-        <vxe-button
-          v-if="showToolsBar.delete"
-          :icon="
-            toolButsText.delete.icon
-              ? toolButsText.delete.icon
-              : 'el-icon-remove-outline'
-          "
-          status="danger"
-          :disabled="hooks.checkeds.length == 0"
-          @click="deleteRows"
-          >{{ toolButsText.delete.text ? toolButsText.delete.text : "删除" }}
+        <vxe-button v-if="showToolsBar.add" :icon="toolButsText.add.icon
+          ? toolButsText.add.icon
+          : 'el-icon-circle-plus-outline'
+          " status="primary" :disabled="isTree ? Object.keys(editRow).length == 0 : false" @click="addModal">{{
+    toolButsText.add.text ? toolButsText.add.text : $t("toolBar.add")
+  }}</vxe-button>
+        <vxe-button v-if="showToolsBar.delete" :icon="toolButsText.delete.icon
+          ? toolButsText.delete.icon
+          : 'el-icon-remove-outline'
+          " status="danger" :disabled="hooks.checkeds.length == 0" @click="deleteRows">{{ toolButsText.delete.text ?
+    toolButsText.delete.text : $t("toolBar.delete") }}
         </vxe-button>
-        <vxe-button
-          v-if="showToolsBar.deleteByCondition"
-          icon="el-icon-delete"
-          status="danger"
-          :disabled="batchDeleteDisabled"
-          @click="deleteByCondition"
-          >删除符合过滤条件</vxe-button
-        >
-        <vxe-button
-          v-if="showToolsBar.update"
-          :icon="
-            toolButsText.update.icon
-              ? toolButsText.update.icon
-              : 'vxe-icon--edit-outline'
-          "
-          status="success"
-          @click="editModal"
-          :disabled="hooks.checkeds.length != 1"
-          >{{ toolButsText.update.text ? toolButsText.update.text : "编辑" }}
+        <vxe-button v-if="showToolsBar.deleteByCondition" icon="el-icon-delete" status="danger"
+          :disabled="batchDeleteDisabled" @click="deleteByCondition">{{ $t("toolBar.deleteByCondition") }}</vxe-button>
+        <vxe-button v-if="showToolsBar.update" :icon="toolButsText.update.icon
+          ? toolButsText.update.icon
+          : 'vxe-icon--edit-outline'
+          " status="success" @click="editModal" :disabled="hooks.checkeds.length != 1">{{ toolButsText.update.text ?
+    toolButsText.update.text : $t("toolBar.edit") }}
         </vxe-button>
-        <vxe-button
-          v-if="showToolsBar.copy"
-          icon="el-icon-document-copy"
-          @click="onCopy"
-          style="background: #31b393; color: #fff"
-          :disabled="Object.keys(editRow).length == 0"
-          >复制</vxe-button
-        >
-        <vxe-button
-          icon="el-icon-printer"
-          v-if="showToolsBar.save"
-          status="perfect"
-          @click="onSave"
-          >保存</vxe-button
-        >
-        <vxe-button
-          v-if="isTree"
-          icon="el-icon-s-home"
-          status="info"
-          @click="onTreeRoot"
-          >根节点</vxe-button
-        >
+        <vxe-button v-if="showToolsBar.copy" icon="el-icon-document-copy" @click="onCopy"
+          style="background: #31b393; color: #fff" :disabled="Object.keys(editRow).length == 0">{{ $t("toolBar.copy")
+          }}</vxe-button>
+        <vxe-button icon="el-icon-printer" v-if="showToolsBar.save" status="perfect" @click="onSave">{{ $t("toolBar.save")
+        }}</vxe-button>
+        <vxe-button v-if="isTree" icon="el-icon-s-home" status="info" @click="onTreeRoot">{{ $t("toolBar.rootNode")
+        }}</vxe-button>
 
         <InputSettings :showTool="showToolsBar.inputSet" :hooks="hooks" />
-        <Search
-          :showTool="showToolsBar.search"
-          :hooks="hooks"
-          :fields="vXTableFields"
-          :simpleSearch="simpleSearch"
-          :selectConfig="selectConfig"
-        />
+        <Search :showTool="showToolsBar.search" :hooks="hooks" :fields="vXTableFields" :simpleSearch="simpleSearch"
+          :selectConfig="selectConfig" />
         <slot name="afterToolbar"></slot>
         <Print :showTool="showToolsBar.print" :hooks="hooks" />
-        <Export
-          :showTool="showToolsBar.export"
-          :hooks="hooks"
-          :params="{
-            queryConfig: selectConfig,
-            queryCondition: searchCondition,
-            filterCondition: filterCondition,
-          }"
-          :fields="vXTableFields"
-          :toolBtnText="toolButsText"
-          :defaultProp="vxDefaultProp"
-          :downloadConfig="downloadConfig"
-          :exportable="showToolsBar.exportable"
-        />
+        <Export :showTool="showToolsBar.export" :hooks="hooks" :params="{
+          queryConfig: selectConfig,
+          queryCondition: searchCondition,
+          filterCondition: filterCondition,
+        }" :fields="vXTableFields" :toolBtnText="toolButsText" :defaultProp="vxDefaultProp"
+          :downloadConfig="downloadConfig" :exportable="showToolsBar.exportable" />
       </div>
       <div class="tool-button-right">
-        <Import
-          v-if="showToolsBar.import"
-          :hooks="hooks"
-          :formData="formData"
-          :isDark="isDark"
-          :params="{
-            importConfig: importConfig,
-          }"
-        />
-        <Tooltip
-          content="刷新"
-          placement="bottom"
-          :effect="isDark ? 'dark' : 'light'"
-        >
-          <vxe-button
-            circle
-            icon="el-icon-refresh"
-            v-if="showToolsBar.refresh"
-            :loading="isRefresh"
-            @click="refresh"
-          ></vxe-button>
+        <Import v-if="showToolsBar.import" :hooks="hooks" :formData="formData" :isDark="isDark" :params="{
+          importConfig: importConfig,
+        }" />
+        <Tooltip :content="$t('toolBar.refreshTooltip')" placement="bottom" :effect="isDark ? 'dark' : 'light'">
+          <vxe-button circle icon="el-icon-refresh" v-if="showToolsBar.refresh" :loading="isRefresh"
+            @click="refresh"></vxe-button>
         </Tooltip>
-        <Tooltip
-          content="全屏"
-          placement="bottom"
-          :effect="isDark ? 'dark' : 'light'"
-        >
-          <vxe-button
-            v-if="showToolsBar.screenfull"
-            circle
-            :icon="
-              isScreenfull ? 'el-icon-copy-document' : 'el-icon-full-screen'
-            "
-            @click="onScreenfull"
-          ></vxe-button>
+        <Tooltip :content="$t('toolBar.screenfullTooltip')" placement="bottom" :effect="isDark ? 'dark' : 'light'">
+          <vxe-button v-if="showToolsBar.screenfull" circle :icon="isScreenfull ? 'el-icon-copy-document' : 'el-icon-full-screen'
+            " @click="onScreenfull"></vxe-button>
         </Tooltip>
-        <ColumnShow
-          v-if="showToolsBar.columnSettings"
-          :fields="vXTableFields"
-          :hooks="hooks"
-        />
-        <vxe-input
-          v-if="showToolsBar.globalSearch"
-          v-model="filterValue"
-          type="search"
-          placeholder="全表搜索"
-          @keyup="onSearch(filterValue)"
-        ></vxe-input>
+        <ColumnShow v-if="showToolsBar.columnSettings" :fields="vXTableFields" :hooks="hooks" />
+        <vxe-input v-if="showToolsBar.globalSearch" v-model="filterValue" type="search"
+          :placeholder="$t(`toolBar.fullTableSearch`)" @keyup="onSearch(filterValue)"></vxe-input>
       </div>
     </div>
     <!-- 表单 -->
-    <vxe-table
-      class="product-list-table"
-      ref="xTable"
-      row-key
-      keep-source
-      :size="size"
-      :align="align"
-      :row-id="rowId"
-      :border="border"
-      :loading="loading"
-      :export-config="{}"
-      :data="vXTableData"
-      :resizable="resizable"
-      :show-header="showHeader"
-      :height="calcuTableHeight"
-      :toolbar-config="tableToolbar"
-      :highlight-hover-row="highlightHoverRow"
-      :highlight-current-row="highlightCurrentRow"
-      :tree-config="vXtreeConfig"
-      :tooltip-config="Object.assign({}, defaultTooltipConfig)"
-      :import-config="{
+    <vxe-table class="product-list-table" ref="xTable" row-key keep-source :size="size" :align="align" :row-id="rowId"
+      :border="border" :loading="loading" :export-config="{}" :data="vXTableData" :resizable="resizable"
+      :show-header="showHeader" :height="calcuTableHeight" :toolbar-config="tableToolbar"
+      :highlight-hover-row="highlightHoverRow" :highlight-current-row="highlightCurrentRow" :tree-config="vXtreeConfig"
+      :tooltip-config="Object.assign({}, defaultTooltipConfig)" :import-config="{
         remote: true,
         importMethod: importFile,
-      }"
-      :edit-config="
-        Object.assign(defaultEditConfig, editConfig, {
-          activeMethod: activeCellMethod,
-        })
-      "
-      :edit-rules="formRules"
-      :checkbox-config="{ checkRowKeys: vxCheckRowKeys, checkStrictly: isTree }"
-      @cell-click="rowClick"
-      @cell-mouseenter="cellMounseenter"
-      @checkbox-all="selectAllCheckbox"
-      @checkbox-change="selectCheckbox"
-      @edit-closed="editClosed"
-    >
+      }" :edit-config="Object.assign(defaultEditConfig, editConfig, {
+  activeMethod: activeCellMethod,
+})
+  " :edit-rules="formRules" :checkbox-config="{ checkRowKeys: vxCheckRowKeys, checkStrictly: isTree }"
+      @cell-click="rowClick" @cell-mouseenter="cellMounseenter" @checkbox-all="selectAllCheckbox"
+      @checkbox-change="selectCheckbox" @edit-closed="editClosed">
       <!-- 复选框-->
-      <vxe-table-column
-        v-if="showCheckbox"
-        type="checkbox"
-        width="60"
-      ></vxe-table-column>
+      <vxe-table-column v-if="showCheckbox" type="checkbox" width="60"></vxe-table-column>
       <!-- 序号 -->
-      <vxe-table-column
-        v-if="showSeq"
-        title="#"
-        width="60"
-        type="seq"
-        :field="rowId"
-      ></vxe-table-column>
+      <vxe-table-column v-if="showSeq" title="#" width="60" type="seq" :field="rowId"></vxe-table-column>
       <template v-for="item in vXTableFields">
         <!-- 普通模式，通过弹框编辑 -->
-        <vxe-table-column
-          v-if="!item.clickEdit"
-          :visible="item.isShow"
-          :key="item.field"
-          :field="item.field"
-          :title="item.title"
-          :width="item.width"
-          :sortable="item.sortable"
-          :tree-node="item.treeNode"
-          :formatter="onFormatter"
-          :show-overflow="item.showOverflow"
-          :align="item.treeNode ? 'left' : ''"
-        >
+        <vxe-table-column v-if="!item.clickEdit" :visible="item.isShow" :key="item.field" :field="item.field"
+          :title="item.title" :width="item.width" :sortable="item.sortable" :tree-node="item.treeNode"
+          :formatter="onFormatter" :show-overflow="item.showOverflow" :align="item.treeNode ? 'left' : ''">
           <!-- 插槽 -->
           <template v-if="item.isSlot" v-slot="{ row }">
             <slot :name="item.slotName" :row="row"></slot>
@@ -294,14 +155,11 @@
           <template v-else-if="item.treeNode" v-slot="{ row }">
             <span>
               <template v-if="row.children && row.children.length">
-                <i
-                  class="tree-node-icon fa"
-                  :class="
+                <i class="tree-node-icon fa" :class="
                     $refs.xTable.isTreeExpandByRow(row)
                       ? 'el-icon-folder-opened'
                       : 'el-icon-folder'
-                  "
-                ></i>
+                  "></i>
               </template>
               <template v-else>
                 <i class="el-icon-document"></i>
@@ -311,18 +169,9 @@
           </template>
         </vxe-table-column>
         <!-- 点击直接编辑 -->
-        <vxe-table-column
-          v-else-if="item.clickEdit"
-          :visible="item.isShow"
-          :key="item.field"
-          :field="item.field"
-          :title="item.title"
-          :width="item.width"
-          :sortable="item.sortable"
-          :tree-node="item.treeNode"
-          :align="item.treeNode ? 'left' : ''"
-          :edit-render="onEditRender(item)"
-        >
+        <vxe-table-column v-else-if="item.clickEdit" :visible="item.isShow" :key="item.field" :field="item.field"
+          :title="item.title" :width="item.width" :sortable="item.sortable" :tree-node="item.treeNode"
+          :align="item.treeNode ? 'left' : ''" :edit-render="onEditRender(item)">
           <!-- 插槽 -->
           <template v-if="item.isSlot" v-slot="{ row }">
             <slot :name="item.slotName" :row="row"></slot>
@@ -331,14 +180,11 @@
           <template v-else-if="item.treeNode" v-slot="{ row }">
             <span>
               <template v-if="row.children && row.children.length">
-                <i
-                  class="tree-node-icon fa"
-                  :class="
+                <i class="tree-node-icon fa" :class="
                     $refs.xTable.isTreeExpandByRow(row)
                       ? 'el-icon-folder-opened'
                       : 'el-icon-folder'
-                  "
-                ></i>
+                  "></i>
               </template>
               <template v-else>
                 <i class="el-icon-document"></i>
@@ -350,53 +196,24 @@
       </template>
     </vxe-table>
     <!-- 表单分页 -->
-    <vxe-pager
-      :id="uuid + '-pager'"
-      v-if="showPageBar"
-      :loading="loading"
-      :current-page="tablePage.pageNum"
-      :page-size="tablePage.pageSize"
-      :total="tablePage.total"
-      :layouts="[
+    <vxe-pager :id="uuid + '-pager'" v-if="showPageBar" :loading="loading" :current-page="tablePage.pageNum"
+      :page-size="tablePage.pageSize" :total="tablePage.total" :layouts="[
         'PrevPage',
         'JumpNumber',
         'NextPage',
         'FullJump',
         'Sizes',
         'Total',
-      ]"
-      @page-change="onPageChange"
-    >
+      ]" @page-change="onPageChange">
     </vxe-pager>
     <!-- 表单增、改弹框 -->
-    <vxe-modal
-      v-model="isModal"
-      :title="dialogTitle"
-      :width="modalWidth"
-      :min-width="300"
-      :min-height="100"
-      resize
-      showFooter
-      destroy-on-close
-      :loading="submitLoading"
-    >
-      <el-alert
-        v-if="formTips.length > 0"
-        type="warning"
-        show-icon
-        :closable="false"
-      >
+    <vxe-modal v-model="isModal" :title="dialogTitle" :width="modalWidth" :min-width="300" :min-height="100" resize
+      showFooter destroy-on-close :loading="submitLoading">
+      <el-alert v-if="formTips.length > 0" type="warning" show-icon :closable="false">
         {{ formTips }}
       </el-alert>
-      <RichForm
-        class="form-dialog"
-        :form="vxFormLayout"
-        :values="formValues"
-        :schema="vxFormRules"
-        :hooks="formHooks"
-        :authorization="token"
-        :showBtns="false"
-      ></RichForm>
+      <RichForm class="form-dialog" :form="vxFormLayout" :values="formValues" :schema="vxFormRules" :hooks="formHooks"
+        :authorization="token" :showBtns="false"></RichForm>
       <template #footer>
         <Button size="small" type="primary" @click="formSubmit">提交</Button>
       </template>
@@ -756,7 +573,7 @@ export default {
           total: result.totalCount,
         });
         this.hooks.remote.tableData = result.items;
-      } catch (e) {}
+      } catch (e) { }
     },
     // 修改滚动条样式
     bodyScrollbarClass() {
@@ -998,9 +815,11 @@ export default {
   height: 100%;
   min-height: 100px;
   position: relative;
+
   .el-alert__icon {
     font-size: 18px;
   }
+
   .toolbar-wrapper {
     display: flex;
     justify-content: space-between;
@@ -1008,54 +827,66 @@ export default {
     flex-wrap: wrap;
     padding: 5px 0;
     background: var(--theme);
-    > .tool-button-left {
+
+    >.tool-button-left {
       display: flex;
       align-items: center;
       padding: 0 3px;
       flex-wrap: wrap;
+
       .vxe-button,
       .vxe-button--dropdown {
         margin-left: 0;
         margin-right: 8px;
       }
+
       .vxe-button--dropdown {
         margin-right: 0px;
       }
+
       ::-webkit-input-placeholder {
         color: #555;
         font-size: 12px;
       }
-      > button {
+
+      >button {
         display: flex;
         align-items: center;
       }
     }
-    > .tool-button-right {
+
+    >.tool-button-right {
       display: flex;
       margin-right: 3px;
-      > * {
+
+      >* {
         margin: 3px;
       }
     }
   }
+
   .form-dialog {
     min-height: 50px;
     max-height: 400px;
+
     .vxe-modal--content {
       scrollbar-width: thin;
       overflow: auto !important;
     }
   }
+
   // ==============修改样式=================
   .vxe-modal--header {
     background: var(--btnBgColor);
   }
+
   /* 修改vxe表格样式 */
   .vxe-table {
     .vxe-table--header-wrapper {
       position: relative;
       background: var(--theme);
     }
+
     &::after {
       content: "";
       position: absolute;
@@ -1066,6 +897,7 @@ export default {
       background: var(--tableBorderColor);
       z-index: 99;
     }
+
     &::before {
       content: "";
       position: absolute;
@@ -1076,6 +908,7 @@ export default {
       background: var(--tableBorderColor);
       z-index: 99;
     }
+
     .vxe-table--main-wrapper::after {
       content: "";
       position: absolute;
@@ -1086,6 +919,7 @@ export default {
       background: var(--tableBorderColor);
       z-index: 99;
     }
+
     .vxe-table--main-wrapper::before {
       content: "";
       position: absolute;
@@ -1096,9 +930,11 @@ export default {
       background: var(--tableBorderColor);
       z-index: 99;
     }
+
     .vxe-table--header-wrapper {
       .vxe-table--header {
         background: var(--theme);
+
         &::after {
           content: "";
           position: absolute;
@@ -1109,9 +945,11 @@ export default {
           background: var(--tableBorderColor);
           z-index: 99;
         }
+
         .vxe-header--row {
-          > .vxe-header--column {
+          >.vxe-header--column {
             position: relative;
+
             &::after {
               content: "";
               position: absolute;
@@ -1122,6 +960,7 @@ export default {
               background: var(--tableBorderColor);
               z-index: 99;
             }
+
             &::before {
               content: "";
               position: absolute;
@@ -1133,8 +972,10 @@ export default {
               z-index: 99;
             }
           }
-          > .col--gutter {
+
+          >.col--gutter {
             position: relative;
+
             &::after {
               content: "";
               position: absolute;
@@ -1149,8 +990,10 @@ export default {
         }
       }
     }
+
     .vxe-table--body-wrapper {
       color: var(--fontColor);
+
       .vxe-body--row::after {
         content: "";
         position: absolute;
@@ -1161,10 +1004,12 @@ export default {
         background: var(--tableBorderColor);
         z-index: 99;
       }
-      .vxe-body--row > .vxe-body--column {
+
+      .vxe-body--row>.vxe-body--column {
         position: relative;
       }
-      .vxe-body--row > .vxe-body--column::after {
+
+      .vxe-body--row>.vxe-body--column::after {
         content: "";
         position: absolute;
         width: 100%;
@@ -1174,7 +1019,8 @@ export default {
         background: var(--tableBorderColor);
         z-index: 99;
       }
-      .vxe-body--row > .vxe-body--column::before {
+
+      .vxe-body--row>.vxe-body--column::before {
         content: "";
         position: absolute;
         width: 1px;
@@ -1184,29 +1030,37 @@ export default {
         background: var(--tableBorderColor);
         z-index: 99;
       }
+
       .vxe-body--row:nth-child(odd) {
         background: var(--theme);
       }
+
       .vxe-body--row:nth-child(even) {
         background: var(--nthChildEvenColor);
       }
     }
   }
+
   /* 修改table滚动条样式 */
   .vx-body-scrollbar {
     scrollbar-width: thin;
+
     &::-webkit-scrollbar {
       width: var(--scrollbarWidth);
     }
+
     &::-webkit-scrollbar-track {
       background: var(--theme);
     }
+
     &::-webkit-scrollbar-thumb {
       background: var(--scrollbarThumbColor);
     }
+
     &::-webkit-scrollbar-thumb:hover {
       background: var(--tableBorderColor);
     }
+
     &::-webkit-scrollbar-corner {
       background: #179a16;
     }
