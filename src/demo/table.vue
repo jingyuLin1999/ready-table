@@ -1,6 +1,6 @@
 <template>
   <div class="ready-table-demo-page">
-    <div @click="onChangeL">语言</div>
+    <!-- <div @click="onChangeL">语言</div> -->
     <ready-table :showToolBtns="{
       import: true,
       export: true,

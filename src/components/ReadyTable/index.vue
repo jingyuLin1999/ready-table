@@ -207,8 +207,8 @@
       ]" @page-change="onPageChange">
     </vxe-pager>
     <!-- 表单增、改弹框 -->
-    <vxe-modal v-model="isModal" :title="dialogTitle" :width="modalWidth" :min-width="300" :min-height="100" resize
-      showFooter destroy-on-close :loading="submitLoading">
+    <vxe-modal v-model="isModal" :title="dialogTitle" :className="colors.theme ? 'ready-table-modal' : ''"
+      :width="modalWidth" :min-width="300" :min-height="100" resize showFooter destroy-on-close :loading="submitLoading">
       <el-alert v-if="formTips.length > 0" type="warning" show-icon :closable="false">
         {{ formTips }}
       </el-alert>
@@ -811,6 +811,32 @@ export default {
 </script>
 
 <style lang="scss">
+.ready-table-modal {
+  .vxe-modal--content {
+
+    /* 修改滚动条宽度和颜色 */
+    &::-webkit-scrollbar {
+      width: 11px;
+      background-color: var(--theme);
+    }
+
+    /* 修改滚动条轨道颜色 */
+    &::-webkit-scrollbar-track {
+      background-color: var(--btnBgColor);
+    }
+
+    /* 修改滚动条滑块颜色 */
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--scrollbarThumbColor);
+    }
+
+    /* 修改滚动条滑块在hover状态下的颜色 */
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: var(--activeColor);
+    }
+  }
+}
+
 .simple-table-wrapper {
   height: 100%;
   min-height: 100px;
@@ -868,11 +894,6 @@ export default {
   .form-dialog {
     min-height: 50px;
     max-height: 400px;
-
-    .vxe-modal--content {
-      scrollbar-width: thin;
-      overflow: auto !important;
-    }
   }
 
   // ==============修改样式=================
@@ -1043,7 +1064,7 @@ export default {
 
   /* 修改table滚动条样式 */
   .vx-body-scrollbar {
-    scrollbar-width: thin;
+    scrollbar-width: auto;
 
     &::-webkit-scrollbar {
       width: var(--scrollbarWidth);
