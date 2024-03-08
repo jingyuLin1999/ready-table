@@ -41,7 +41,8 @@ export const defaultProp = {
     data: "payload.list", // 响应
     pageNum: "pageNum", // 请求
     pageSize: "pageSize", // 请求
-    deleteIds: "deleteIds"
+    deleteIds: "deleteIds",
+    exportFields: "exportFields", // 要导出的字段，后端导出时用
 };
 
 export const defaultTablePage = { // 默认分页

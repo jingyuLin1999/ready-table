@@ -1,40 +1,16 @@
 <template>
   <div class="export-tool" v-if="showTool">
-    <vxe-button
-      :icon="
-        toolBtnText.export.icon ? toolBtnText.export.icon : 'el-icon-download'
-      "
-      status="warning"
-      :loading="loading"
-      size="small"
-      :content="exportLabel"
-    >
+    <vxe-button :icon="toolBtnText.export.icon ? toolBtnText.export.icon : 'el-icon-download'
+    " status="warning" :loading="loading" size="small" :content="exportLabel">
       <template #dropdowns>
-        <vxe-button
-          v-if="exportable.filter"
-          type="text"
-          :content="$t('toolBar.export.filter')"
-          @click="exportFilter"
-        ></vxe-button>
-        <vxe-button
-          v-if="exportable.curPage"
-          type="text"
-          :content="$t('toolBar.export.curPage')"
-          @click="exportCurPage"
-        ></vxe-button>
-        <vxe-button
-          v-if="exportable.checked"
-          type="text"
-          :content="$t('toolBar.export.checked')"
-          @click="exportChecked"
-        ></vxe-button>
-        <vxe-button
-          v-if="exportable.template"
-          type="text"
-          status="success"
-          :content="$t('toolBar.export.template')"
-          @click="createExcel"
-        ></vxe-button>
+        <vxe-button v-if="exportable.filter" type="text" :content="$t('toolBar.export.filter')"
+          @click="exportFilter"></vxe-button>
+        <vxe-button v-if="exportable.curPage" type="text" :content="$t('toolBar.export.curPage')"
+          @click="exportCurPage"></vxe-button>
+        <vxe-button v-if="exportable.checked" type="text" :content="$t('toolBar.export.checked')"
+          @click="exportChecked"></vxe-button>
+        <vxe-button v-if="exportable.template" type="text" status="success" :content="$t('toolBar.export.template')"
+          @click="createExcel"></vxe-button>
       </template>
     </vxe-button>
   </div>
@@ -63,24 +39,7 @@ export default {
       mockInterval: null,
     };
   },
-  watch: {
-    fields() {
-      this.exportColumns;
-    },
-  },
   computed: {
-    exportColumns() {
-      const pickExportFields = [];
-      if (Array.isArray(this.fields)) {
-        this.fields.map((item) => {
-          if (item.exportable)
-            pickExportFields.push({
-              field: item.field,
-            });
-        });
-      }
-      return pickExportFields;
-    },
     exportLabel() {
       let baseLabel = this.toolBtnText.export.text || this.$t("toolBar.export.title");
       if (this.downloadProgress > 0 && this.downloadProgress <= 100)
@@ -96,6 +55,20 @@ export default {
     this.initHooks();
   },
   methods: {
+    exportColumns() {
+      let detailExportFields = [], exportFields = []
+      if (Array.isArray(this.fields)) {
+        this.fields.map((item) => {
+          if (item.exportable && item.isShow) {
+            detailExportFields.push({
+              field: item.field,
+            });
+            exportFields.push(item.field)
+          }
+        });
+      }
+      return { detailExportFields, exportFields };
+    },
     initHooks() {
       this.hooks.exportTemplate = this.createExcel;
     },
@@ -168,6 +141,7 @@ export default {
         method: method || "get",
         [method == "get" ? "params" : "data"]: {
           ...params,
+          [this.defaultProp.exportFields]: this.exportColumns().exportFields
         },
         responseType: "blob",
         headers: {
@@ -228,7 +202,7 @@ export default {
         type: "xlsx",
         data: data,
         original: false,
-        columns: this.exportColumns,
+        columns: this.exportColumns().detailExportFields,
       });
       this.loading = false;
     },
@@ -240,11 +214,13 @@ export default {
 .export-tool {
   box-sizing: border-box;
   width: 90px;
+
   .vxe-button,
   .vxe-button--dropdown {
     margin-left: 0;
     margin-right: 8px;
   }
+
   .vxe-button--dropdown {
     margin-right: 0px;
   }

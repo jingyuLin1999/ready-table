@@ -16,10 +16,10 @@
       :updateConfig="updateConfig" :selectConfig="selectConfig" :downloadConfig="downloadConfig" :reqIgnoreKeys="['sort']"
       :filterCondition="{
         dataType: 'macStatus',
-        endDate: '2022-05-27 07:00:00',
+        endDate: '2022-06-24 12:19:00',
         mac_code: [],
         shopCode: 'j6-3-9',
-        startDate: '2022-05-26 07:00:00',
+        startDate: '2022-06-24 12:18:00',
       }" :autoPager="true" :token="{
   // url请求基本配置
   key: 'Authorization',

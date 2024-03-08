@@ -2,11 +2,7 @@
   <div class="column-show">
     <Popover placement="bottom" width="150" v-model="visible">
       <p class="field" v-for="(field, index) in fields" :key="index">
-        <Checkbox
-          :checked="field.isShow"
-          v-model="value[field.field]"
-          @change="onChange(field)"
-          >{{ field.title }}
+        <Checkbox :checked="field.isShow" v-model="value[field.field]" @change="onChange(field)">{{ field.title }}
         </Checkbox>
       </p>
       <vxe-button slot="reference" icon="el-icon-s-grid" circle></vxe-button>
@@ -30,7 +26,7 @@ export default {
   },
   methods: {
     onChange(field) {
-      field.isShow = !field.isShow;
+      this.$set(field, "isShow", !field.isShow)
       const { showColumn, hideColumn } = this.hooks.xTable;
       if (field.isShow) showColumn(field.field);
       else hideColumn(field.field);
@@ -44,6 +40,7 @@ export default {
   .check-fields {
     padding: 0 10px;
     overflow: auto;
+
     .field {
       .field-icon {
         margin-right: 5px;
