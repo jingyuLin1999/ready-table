@@ -56,10 +56,10 @@ module.exports = {
       "richform": "richform",
       "screenfull": "screenfull",
       "short-uuid": "short-uuid",
+      "vue-i18n": "vue-i18n",
+      "vxe-pc-ui": "vxe-pc-ui",
       "vxe-table": "vxe-table",
-      "vxe-table-plugin-export-xlsx": "vxe-table-plugin-export-xlsx",
-      "xe-utils": "xe-utils",
-      "vue-i18n": "vue-i18n"
+      "vxe-table-plugin-export-xlsx": "vxe-table-plugin-export-xlsx"
     } : {}
   },
   // to handle element icon error in build. 

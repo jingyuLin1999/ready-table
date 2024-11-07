@@ -71,13 +71,13 @@
           ? toolButsText.add.icon
           : 'el-icon-circle-plus-outline'
           " status="primary" :disabled="isTree ? Object.keys(editRow).length == 0 : false" @click="addModal">{{
-    toolButsText.add.text ? toolButsText.add.text : $t("toolBar.add")
-  }}</vxe-button>
+            toolButsText.add.text ? toolButsText.add.text : $t("toolBar.add")
+          }}</vxe-button>
         <vxe-button v-if="showToolsBar.delete" :icon="toolButsText.delete.icon
           ? toolButsText.delete.icon
           : 'el-icon-remove-outline'
           " status="danger" :disabled="hooks.checkeds.length == 0" @click="deleteRows">{{ toolButsText.delete.text ?
-    toolButsText.delete.text : $t("toolBar.delete") }}
+            toolButsText.delete.text : $t("toolBar.delete") }}
         </vxe-button>
         <vxe-button v-if="showToolsBar.deleteByCondition" icon="el-icon-delete" status="danger"
           :disabled="batchDeleteDisabled" @click="deleteByCondition">{{ $t("toolBar.deleteByCondition") }}</vxe-button>
@@ -85,15 +85,16 @@
           ? toolButsText.update.icon
           : 'vxe-icon--edit-outline'
           " status="success" @click="editModal" :disabled="hooks.checkeds.length != 1">{{ toolButsText.update.text ?
-    toolButsText.update.text : $t("toolBar.edit") }}
+            toolButsText.update.text : $t("toolBar.edit") }}
         </vxe-button>
         <vxe-button v-if="showToolsBar.copy" icon="el-icon-document-copy" @click="onCopy"
           style="background: #31b393; color: #fff" :disabled="Object.keys(editRow).length == 0">{{ $t("toolBar.copy")
           }}</vxe-button>
-        <vxe-button icon="el-icon-printer" v-if="showToolsBar.save" status="perfect" @click="onSave">{{ $t("toolBar.save")
+        <vxe-button icon="el-icon-printer" v-if="showToolsBar.save" status="perfect" @click="onSave">{{
+          $t("toolBar.save")
         }}</vxe-button>
         <vxe-button v-if="isTree" icon="el-icon-s-home" status="info" @click="onTreeRoot">{{ $t("toolBar.rootNode")
-        }}</vxe-button>
+          }}</vxe-button>
 
         <InputSettings :showTool="showToolsBar.inputSet" :hooks="hooks" />
         <Search :showTool="showToolsBar.search" :hooks="hooks" :fields="vXTableFields" :simpleSearch="simpleSearch"
@@ -125,17 +126,18 @@
       </div>
     </div>
     <!-- 表单 -->
-    <vxe-table class="product-list-table" ref="xTable" row-key keep-source :size="size" :align="align" :row-id="rowId"
-      :border="border" :loading="loading" :export-config="{}" :data="vXTableData" :resizable="resizable"
-      :show-header="showHeader" :height="calcuTableHeight" :toolbar-config="tableToolbar"
-      :highlight-hover-row="highlightHoverRow" :highlight-current-row="highlightCurrentRow" :tree-config="vXtreeConfig"
+    <vxe-table class="product-list-table" ref="xTable" keep-source :size="size" :align="align" :border="border"
+      :loading="loading" :export-config="{}" :data="vXTableData" :resizable="resizable"
+      :row-config="{ keyField: rowId, useKey: true }" :show-header="showHeader" :height="calcuTableHeight"
+      :toolbar-config="tableToolbar" :highlight-hover-row="highlightHoverRow"
+      :highlight-current-row="highlightCurrentRow" :tree-config="vXtreeConfig"
       :tooltip-config="Object.assign({}, defaultTooltipConfig)" :import-config="{
         remote: true,
         importMethod: importFile,
       }" :edit-config="Object.assign(defaultEditConfig, editConfig, {
-  activeMethod: activeCellMethod,
-})
-  " :edit-rules="formRules" :checkbox-config="{ checkRowKeys: vxCheckRowKeys, checkStrictly: isTree }"
+        beforeEditMethod: activeCellMethod,
+      })
+        " :edit-rules="formRules" :checkbox-config="{ checkRowKeys: vxCheckRowKeys, checkStrictly: isTree }"
       @cell-click="rowClick" @cell-mouseenter="cellMounseenter" @checkbox-all="selectAllCheckbox"
       @checkbox-change="selectCheckbox" @edit-closed="editClosed">
       <!-- 复选框-->
@@ -155,10 +157,9 @@
           <template v-else-if="item.treeNode" v-slot="{ row }">
             <span>
               <template v-if="row.children && row.children.length">
-                <i class="tree-node-icon fa" :class="
-                    $refs.xTable.isTreeExpandByRow(row)
-                      ? 'el-icon-folder-opened'
-                      : 'el-icon-folder'
+                <i class="tree-node-icon fa" :class="$refs.xTable.isTreeExpandByRow(row)
+                  ? 'el-icon-folder-opened'
+                  : 'el-icon-folder'
                   "></i>
               </template>
               <template v-else>
@@ -180,10 +181,9 @@
           <template v-else-if="item.treeNode" v-slot="{ row }">
             <span>
               <template v-if="row.children && row.children.length">
-                <i class="tree-node-icon fa" :class="
-                    $refs.xTable.isTreeExpandByRow(row)
-                      ? 'el-icon-folder-opened'
-                      : 'el-icon-folder'
+                <i class="tree-node-icon fa" :class="$refs.xTable.isTreeExpandByRow(row)
+                  ? 'el-icon-folder-opened'
+                  : 'el-icon-folder'
                   "></i>
               </template>
               <template v-else>
@@ -208,7 +208,8 @@
     </vxe-pager>
     <!-- 表单增、改弹框 -->
     <vxe-modal v-model="isModal" :title="dialogTitle" :className="colors.theme ? 'ready-table-modal' : ''"
-      :width="modalWidth" :min-width="300" :min-height="100" resize showFooter destroy-on-close :loading="submitLoading">
+      :width="modalWidth" :min-width="300" :min-height="100" resize showFooter destroy-on-close
+      :loading="submitLoading">
       <el-alert v-if="formTips.length > 0" type="warning" show-icon :closable="false">
         {{ formTips }}
       </el-alert>
@@ -224,7 +225,6 @@
 </template>
 
 <script>
-import "vxe-table/lib/style.css";
 import short from "short-uuid";
 import { Tooltip, Button } from "element-ui";
 import screenfull from "screenfull";
@@ -232,14 +232,22 @@ import { RichForm } from "richform";
 import formMixin from "./mixins/formMixin";
 import editMixin from "./mixins/editMixin";
 import { mergeDeepRight, clone } from "ramda";
-import Vue from "vue";
-import "xe-utils";
-import VXETable from "vxe-table";
-import VXETablePluginExportXLSX from "vxe-table-plugin-export-xlsx";
-VXETable.use(VXETablePluginExportXLSX);
-Vue.use(VXETable);
 import elementResizeDetectorMaker from "element-resize-detector";
 import { _debounce, observerDomResize, getRgbValueFromHex } from "./utils";
+import Vue from "vue";
+// 完整导入 UI 组件库
+import VxeUI from 'vxe-pc-ui'
+import 'vxe-pc-ui/lib/style.css'
+// 完整导入 表格库
+import VxeUITable from 'vxe-table'
+import 'vxe-table/lib/style.css'
+Vue.use(VxeUI)
+Vue.use(VxeUITable)
+import VXETablePluginExportXLSX from 'vxe-table-plugin-export-xlsx'
+import ExcelJS from 'exceljs'
+VxeUITable.use(VXETablePluginExportXLSX, {
+  ExcelJS
+})
 
 import {
   InputSettings,
@@ -898,7 +906,7 @@ export default {
 
   // ==============修改样式=================
   .vxe-modal--header {
-    background: var(--btnBgColor);
+    background: var(--btnBgColor) !important;
   }
 
   /* 修改vxe表格样式 */

@@ -52,7 +52,7 @@ export const defaultTablePage = { // 默认分页
 }
 
 export const defaultTreeConfig = {
-    children: 'children',
+    childrenField: 'children',
     accordion: false,
     expandAll: true,
     line: false,
