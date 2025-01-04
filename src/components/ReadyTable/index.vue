@@ -218,6 +218,7 @@
 </template>
 
 <script>
+import "vxe-table/lib/style.css";
 import short from "short-uuid";
 import { Tooltip, Button } from "element-ui";
 import screenfull from "screenfull";

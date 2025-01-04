@@ -57,9 +57,9 @@ module.exports = {
       "screenfull": "screenfull",
       "short-uuid": "short-uuid",
       "vue-i18n": "vue-i18n",
-      "vxe-pc-ui": "vxe-pc-ui",
-      "vxe-table": "vxe-table",
-      "vxe-table-plugin-export-xlsx": "vxe-table-plugin-export-xlsx"
+      // "vxe-table": "vxe-table", // 这两个别加进来，不然会有问题
+      // "vxe-table-plugin-export-xlsx": "vxe-table-plugin-export-xlsx",
+      "xe-utils": "xe-utils"
     } : {}
   },
   // to handle element icon error in build. 
