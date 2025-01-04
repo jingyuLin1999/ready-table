@@ -1,11 +1,11 @@
 {
   "name": "ready-table",
-  "version": "0.5.9",
+  "version": "0.6.6",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "product": "vue-cli-service build --target lib --name ready-table src/components/index.js",
+    "build:prod": "vue-cli-service build --target lib --name ready-table src/components/index.js",
     "lint": "vue-cli-service lint"
   },
   "main": "dist/ready-table.umd.min.js",
@@ -16,17 +16,17 @@
     "dayjs": "^1.11.0",
     "element-resize-detector": "^1.2.4",
     "element-ui": "^2.15.6",
-    "exceljs": "^4.4.0",
+    "exceljs": "^4.3.0",
     "ramda": "^0.27.1",
-    "richform": "^0.8.1",
+    "richform": "^0.11.50",
     "screenfull": "^4.2.0",
     "short-uuid": "^4.2.0",
     "vue": "^2.6.11",
     "vue-i18n": "^8.28.2",
     "vue-router": "^3.5.1",
-    "vxe-pc-ui": "^3.2.12",
-    "vxe-table": "^3.8.27",
-    "vxe-table-plugin-export-xlsx": "^3.3.7"
+    "vxe-table": "^3.4.15",
+    "vxe-table-plugin-export-xlsx": "^2.2.2",
+    "xe-utils": "^3.5.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

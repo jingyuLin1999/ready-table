@@ -49,10 +49,19 @@ export const defaultTablePage = { // 默认分页
     total: 10, // 总共数据条数
     pageNum: 1, // 第几页
     pageSize: 15, // 每页大小
+    pageSizes: [10, 15, 20, 50, 100], // 分页数
+    layouts: [
+        'PrevPage',
+        'JumpNumber',
+        'NextPage',
+        'FullJump',
+        'Sizes',
+        'Total',
+    ]
 }
 
 export const defaultTreeConfig = {
-    childrenField: 'children',
+    children: 'children',
     accordion: false,
     expandAll: true,
     line: false,
@@ -152,4 +161,8 @@ export const defaultLayout = {
         },
     ],
     layout: []
+}
+
+export const defaultSortConfig = {
+    
 }

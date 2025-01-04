@@ -126,16 +126,15 @@
       </div>
     </div>
     <!-- 表单 -->
-    <vxe-table class="product-list-table" ref="xTable" keep-source :size="size" :align="align" :border="border"
-      :loading="loading" :export-config="{}" :data="vXTableData" :resizable="resizable"
-      :row-config="{ keyField: rowId, useKey: true }" :show-header="showHeader" :height="calcuTableHeight"
-      :toolbar-config="tableToolbar" :highlight-hover-row="highlightHoverRow"
-      :highlight-current-row="highlightCurrentRow" :tree-config="vXtreeConfig"
-      :tooltip-config="Object.assign({}, defaultTooltipConfig)" :import-config="{
+    <vxe-table class="product-list-table" ref="xTable" row-key keep-source :size="size" :align="align" :row-id="rowId"
+      :border="border" :loading="loading" :export-config="{}" :data="vXTableData" :resizable="resizable"
+      :show-header="showHeader" :height="calcuTableHeight" :toolbar-config="tableToolbar"
+      :highlight-hover-row="highlightHoverRow" :highlight-current-row="highlightCurrentRow" :tree-config="vXtreeConfig"
+      :sort-config="sortConfig" :tooltip-config="Object.assign({}, defaultTooltipConfig)" :import-config="{
         remote: true,
         importMethod: importFile,
       }" :edit-config="Object.assign(defaultEditConfig, editConfig, {
-        beforeEditMethod: activeCellMethod,
+        activeMethod: activeCellMethod,
       })
         " :edit-rules="formRules" :checkbox-config="{ checkRowKeys: vxCheckRowKeys, checkStrictly: isTree }"
       @cell-click="rowClick" @cell-mouseenter="cellMounseenter" @checkbox-all="selectAllCheckbox"
@@ -197,14 +196,8 @@
     </vxe-table>
     <!-- 表单分页 -->
     <vxe-pager :id="uuid + '-pager'" v-if="showPageBar" :loading="loading" :current-page="tablePage.pageNum"
-      :page-size="tablePage.pageSize" :total="tablePage.total" :layouts="[
-        'PrevPage',
-        'JumpNumber',
-        'NextPage',
-        'FullJump',
-        'Sizes',
-        'Total',
-      ]" @page-change="onPageChange">
+      :page-size="tablePage.pageSize" :total="tablePage.total" :layouts="tablePage.layouts"
+      :page-sizes="tablePage.pageSizes" @page-change="onPageChange">
     </vxe-pager>
     <!-- 表单增、改弹框 -->
     <vxe-modal v-model="isModal" :title="dialogTitle" :className="colors.theme ? 'ready-table-modal' : ''"
@@ -232,22 +225,14 @@ import { RichForm } from "richform";
 import formMixin from "./mixins/formMixin";
 import editMixin from "./mixins/editMixin";
 import { mergeDeepRight, clone } from "ramda";
+import Vue from "vue";
+import "xe-utils";
+import VXETable from "vxe-table";
+import VXETablePluginExportXLSX from "vxe-table-plugin-export-xlsx";
+VXETable.use(VXETablePluginExportXLSX);
+Vue.use(VXETable);
 import elementResizeDetectorMaker from "element-resize-detector";
 import { _debounce, observerDomResize, getRgbValueFromHex } from "./utils";
-import Vue from "vue";
-// 完整导入 UI 组件库
-import VxeUI from 'vxe-pc-ui'
-import 'vxe-pc-ui/lib/style.css'
-// 完整导入 表格库
-import VxeUITable from 'vxe-table'
-import 'vxe-table/lib/style.css'
-Vue.use(VxeUI)
-Vue.use(VxeUITable)
-import VXETablePluginExportXLSX from 'vxe-table-plugin-export-xlsx'
-import ExcelJS from 'exceljs'
-VxeUITable.use(VXETablePluginExportXLSX, {
-  ExcelJS
-})
 
 import {
   InputSettings,
@@ -268,6 +253,7 @@ import {
   defaultToolBar,
   defaultTablePage,
   defaultToolBtnText,
+  defaultSortConfig,
 } from "./utils/defaultData";
 import { tableData, tableFields, searchTable } from "./utils/apis";
 
@@ -301,13 +287,15 @@ export default {
     colors: { type: Object, default: () => ({}) }, // 表单颜色，具体字段请见defaultLayout
     autoPager: { type: Boolean, default: true }, // 是否自动分页，当为false时表示后端一次性把所有数据都返回，这种情况需要手动分页
     scrollbarWidth: { type: String, default: "12px" }, // 滚动条宽度
+    sortConfig: { type: Object, default: () => (clone(defaultSortConfig)) }, // 排序规则
+    pageInfo: { type: Object, default: () => ({}) }, // 分页信息
     // -------工具栏-------
     showToolBar: { type: Boolean, default: true }, // 显示工具栏
     showToolBtns: { type: Object, default: () => ({}) }, // 工具栏按钮控制,具体参数见defaultData
     toolBtnText: { teype: Object, default: () => ({}) }, // text
     showPageBar: { type: Boolean, default: true }, // 显示分页
     showCheckbox: { type: Boolean, default: true }, // 是否显示checkbox
-    isLoading: { type: Boolean, default: true }, // 正在加载中
+    isLoading: { type: Boolean, default: false }, // 正在加载中
     resizable: { type: Boolean, default: true }, // 列宽是否允许拖动
     align: { type: String, default: "center" }, // 对其方式
     tableToolbar: { type: Object, default: () => ({}) }, // 配置文件
@@ -368,7 +356,7 @@ export default {
       defaultEditConfig, // 默认编辑配置
       noEditFields: {}, // 不允许编辑的栏位
       defaultHooks, // 默认挂载容器
-      tablePage: JSON.parse(JSON.stringify(defaultTablePage)),
+      tablePage: clone(defaultTablePage),
       checkedPageList: {}, // 记录每页的勾选值，用于记录全部勾选或取消的临时变量
       remote: {
         // 远端数据,必须写成obj格式，以备更新
@@ -381,6 +369,7 @@ export default {
     };
   },
   created() {
+    Object.assign(this.tablePage, this.pageInfo)
     Object.assign(this.hooks, clone(this.defaultHooks), this.hooks);
   },
   async mounted() {
@@ -486,6 +475,7 @@ export default {
       this.hooks.calcuHeight = this.calcuHeight;
       this.hooks.loadTableData = this.loadTableData;
       this.hooks.searchCondition = this.searchCondition;
+      this.hooks.$data = this.$data
       this.$emit("xTable", this.$refs.xTable);
     },
     // 刷新
@@ -510,7 +500,8 @@ export default {
       if (this.tableData.length > 0) return;
       try {
         if (Object.keys(this.selectConfig).length == 0) {
-          console.warn("请传入正确的selectConfig获取远程数据或传入tableData");
+          // console.warn("请传入正确的selectConfig获取远程数据或传入tableData");
+          this.$emit("loadData", this.hooks)
           return;
         }
         this.loading = true;
@@ -533,7 +524,7 @@ export default {
       } catch (e) {
         console.warn(`获取表数据失败，请检查url和method是否正确！`, e);
       } finally {
-        this.loading = false;
+        // this.loading = false;
       }
     },
     // 加载表的栏位
@@ -660,6 +651,7 @@ export default {
       });
     },
     onPageChange(pageInfo) {
+      this.$emit("pageChange", pageInfo)
       const { currentPage, pageSize } = pageInfo;
       this.tablePage.pageSize = pageSize;
       this.tablePage.pageNum = currentPage;
@@ -906,7 +898,7 @@ export default {
 
   // ==============修改样式=================
   .vxe-modal--header {
-    background: var(--btnBgColor) !important;
+    background: var(--btnBgColor);
   }
 
   /* 修改vxe表格样式 */

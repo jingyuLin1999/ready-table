@@ -1,36 +1,12 @@
 <template>
   <div class="ready-table-demo-page">
-    <!-- <div @click="onChangeL">语言</div> -->
-    <ready-table :showToolBtns="{
-      import: true,
-      export: true,
-      update: true,
-      delete: true,
-      search: false,
-      add: true,
-      refresh: true,
-      exportable: {
-        filter: true,
-      },
-    }" :showToolBar="true" :showPageBar="true" :colors="colors" :addConfig="addConfig" :deleteConfig="deleteConfig"
-      :updateConfig="updateConfig" :selectConfig="selectConfig" :downloadConfig="downloadConfig" :reqIgnoreKeys="['sort']"
-      :filterCondition="{
-        dataType: 'macStatus',
-        endDate: '2022-06-24 12:19:00',
-        mac_code: [],
-        shopCode: 'j6-3-9',
-        startDate: '2022-06-24 12:18:00',
-      }" :autoPager="true" :token="{
-  // url请求基本配置
-  key: 'Authorization',
-  value: 'token',
-  baseUrl: 'http://localhost:8594',
-}" :defaultProp="{
-  // 后端返回的字段映射关系
-  data: 'payload.tableData',
-  total: 'payload.tablePage.total',
-}" :formRules="formRules" :hooks="tableHooks" :fields="fields" :importConfig="importConfig"
-      :toolBtnText="toolBtnText">
+    <!-- <div @click="onChangeL">语言</div>  -->
+    <ready-table :showToolBtns="showToolBtns" :showToolBar="true" :showPageBar="true" :colors="colors"
+      :selectConfig="selectConfig" :addConfig="addConfig" :deleteConfig="deleteConfig" :updateConfig="updateConfig"
+      :downloadConfig="downloadConfig" :reqIgnoreKeys="['sort']" :pageInfo="pageInfo" :filterCondition="filterCondition"
+      :autoPager="true" :token="token" :defaultProp="defaultProp" :formRules="formRules" :hooks="tableHooks"
+      :fields="fields" :importConfig="importConfig" :toolBtnText="toolBtnText" :sortConfig="sortConfig"
+      @pageChange="pageChange" @loadData="loadData">
       <template #afterToolbar>
         <vxe-button icon="el-icon-download" status="primary" :disabled="tableHooks.checkeds.length != 1">下载</vxe-button>
       </template>
@@ -46,9 +22,67 @@ export default {
     onChangeL() {
       this.$i18n.locale = this.$i18n.locale == "en" ? "zh-CN" : "en";
     },
+    sortAction(sort) {
+      this.loadData()
+      console.log("sort", sort)
+    },
+    pageChange(pageInfo) {
+      console.log("pageInfo", pageInfo)
+    },
+    async loadData() {
+      const { $data } = this.tableHooks;
+      $data.loading = true;
+      await new Promise((resolve) => setTimeout(() => resolve(), 2000))
+      $data.loading = false;
+      console.log("=======loadData==========")
+    }
+  },
+  computed: {
+    sortConfig() {
+      return {
+        multiple: true,
+        sortMethod: this.sortAction
+      }
+    },
   },
   data() {
     return {
+      pageInfo: {
+        pageNum: 1,
+        pageSize: 10,
+        total: 1000,
+        pageSizes: [10, 15, 20, 50, 100, 200],
+      },
+      token: {
+        // url请求基本配置
+        key: 'Authorization',
+        value: 'token',
+        baseUrl: 'http://localhost:8594',
+      },
+      showToolBtns: {
+        import: true,
+        export: true,
+        update: true,
+        delete: true,
+        search: false,
+        add: true,
+        refresh: true,
+        exportable: {
+          filter: true,
+        },
+      },
+      defaultProp: {
+        // 后端返回的字段映射关系
+        data: 'payload.tableData',
+        total: 'payload.tablePage.total',
+      },
+      filterCondition: {
+        dataType: 'macStatus',
+        endDate: '2022-06-24 12:19:00',
+        mac_code: [],
+        shopCode: 'j6-3-9',
+        startDate: '2022-06-24 12:18:00',
+      },
       toolBtnText: {
         // update: { text: "更新" },
       },
@@ -81,7 +115,7 @@ export default {
           title: "区域编号",
           field: "code",
           isSlot: false,
-          sortable: false,
+          sortable: true,
           searchable: true,
           importRequired: true,
           formSort: 9,
@@ -90,7 +124,7 @@ export default {
           title: "区域名称",
           field: "name",
           isSlot: false,
-          sortable: false,
+          sortable: true,
           searchable: true,
           importRequired: true,
           formSort: 10,
@@ -171,7 +205,17 @@ export default {
 .ready-table-demo-page {
   width: 100%;
   height: 100%;
+
+  .vxe-table--body {
+    tbody {
+      tr:nth-child(odd) {
+        background-color: #1c2d6e !important;
+      }
+
+      tr:hover {
+        background-color: #3d4f97 !important;
+      }
+    }
+  }
 }
 </style>
-
-
