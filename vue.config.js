@@ -57,6 +57,8 @@ module.exports = {
       "screenfull": "screenfull",
       "short-uuid": "short-uuid",
       "vue-i18n": "vue-i18n",
+      "vue": "vue",
+      "vue-router": "vue-router",
       // "vxe-table": "vxe-table", // 这两个别加进来，不然会有问题
       // "vxe-table-plugin-export-xlsx": "vxe-table-plugin-export-xlsx",
       "xe-utils": "xe-utils"

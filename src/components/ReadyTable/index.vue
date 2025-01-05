@@ -502,7 +502,7 @@ export default {
       try {
         if (Object.keys(this.selectConfig).length == 0) {
           // console.warn("请传入正确的selectConfig获取远程数据或传入tableData");
-          this.$emit("loadData", this.hooks)
+          this.$emit("beforeLoadData")
           return;
         }
         this.loading = true;

@@ -1,12 +1,12 @@
 <template>
   <div class="ready-table-demo-page">
-    <!-- <div @click="onChangeL">语言</div>  -->
-    <ready-table :showToolBtns="showToolBtns" :showToolBar="true" :showPageBar="true" :colors="colors"
-      :selectConfig="selectConfig" :addConfig="addConfig" :deleteConfig="deleteConfig" :updateConfig="updateConfig"
+    <!-- <div @click="onChangeL">语言</div>  :selectConfig="selectConfig"  -->
+    <ready-table ref="tableRef" :showToolBtns="showToolBtns" :showToolBar="true" :showPageBar="true" :colors="colors"
+      :tableData="tableData" :addConfig="addConfig" :deleteConfig="deleteConfig" :updateConfig="updateConfig"
       :downloadConfig="downloadConfig" :reqIgnoreKeys="['sort']" :pageInfo="pageInfo" :filterCondition="filterCondition"
       :autoPager="true" :token="token" :defaultProp="defaultProp" :formRules="formRules" :hooks="tableHooks"
       :fields="fields" :importConfig="importConfig" :toolBtnText="toolBtnText" :sortConfig="sortConfig"
-      @pageChange="pageChange" @loadData="loadData">
+      @pageChange="pageChange" @beforeLoadData="loadTableData">
       <template #afterToolbar>
         <vxe-button icon="el-icon-download" status="primary" :disabled="tableHooks.checkeds.length != 1">下载</vxe-button>
       </template>
@@ -18,23 +18,51 @@ import { Modal } from "vxe-table";
 import ReadyTable from "@/components/ReadyTable";
 export default {
   components: { ReadyTable, Modal },
+  mounted() {
+    setTimeout(() => {
+      const sss = [{
+        code: "N01"
+      }]
+      this.tableData = sss
+      // this.tableData.push({
+      //   code: "N01"
+      // },)
+      // this.tableData.push({
+      //   code: "N091"
+      // },)
+    }, 5000)
+  },
   methods: {
     onChangeL() {
       this.$i18n.locale = this.$i18n.locale == "en" ? "zh-CN" : "en";
     },
     sortAction(sort) {
-      this.loadData()
+      this.loadTableData()
       console.log("sort", sort)
     },
     pageChange(pageInfo) {
       console.log("pageInfo", pageInfo)
     },
-    async loadData() {
+    async loadTableData() {
+      console.log("=======loadData==========")
       const { $data } = this.tableHooks;
       $data.loading = true;
       await new Promise((resolve) => setTimeout(() => resolve(), 2000))
-      $data.loading = false;
-      console.log("=======loadData==========")
+      const payload = {
+        tableData: [
+          {
+            code: "1123"
+          }
+        ],
+        tablePage: {
+          total: 80
+        }
+      }
+      const { resetTable } = this.$refs.tableRef;
+      if (resetTable) {
+        resetTable(payload)
+        $data.loading = false;
+      }
     }
   },
   computed: {
@@ -47,6 +75,7 @@ export default {
   },
   data() {
     return {
+      tableData: [],
       pageInfo: {
         pageNum: 1,
         pageSize: 10,
